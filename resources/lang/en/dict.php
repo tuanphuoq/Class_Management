@@ -19,4 +19,11 @@ return [
     	'delete' => 'Delete',
     	'update' => 'Update',
     ],
+    'class' => [
+        'class_manager' => 'Classroom Management',
+        'my_class' => 'My Classroom',
+        'add_class' => 'Add a new classroom',
+        'delete_success' => 'Delete classroom successfully',
+        'delete_fail' => "Delete classroom fail, You haven't permission to delete" ,
+    ]
 ];

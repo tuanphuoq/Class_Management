@@ -72,25 +72,27 @@
             <span class="hidden-xs">{{Auth::user()->name}} </span> 
           </div>
         </div>
-        <div class="user-logout text-center">
-          <a href="{{route('logout')}}" class="p-3"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a>
-        </div>
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">Main Navigation</li>
+          @if(Auth::user()->role == 1)
           <li class="">
             <a href="{{asset('')}}user">
               <i class="fa fa-user-circle-o" aria-hidden="true"></i> <span>{{__('dict.navbar.user_manager')}}</span>
             </a>
           </li>
+          @endif
           <li class="treeview">
             <a>
-              <i class="fa fa-thermometer-empty" aria-hidden="true"></i> <span>Vaccine</span>
+              <i class="fa fa-braille" aria-hidden="true"></i> <span> {{__('dict.class.class_manager')}}</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="{{asset('')}}admin/vaccine"><i class="fa fa-circle-o"></i> Vaccine</a></li>
+              @if(Auth::user()->role == 1 || Auth::user()->role == 2)
+              <li><a href="{{asset('')}}class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.class_manager')}}</a></li>
+              @endif
+              <li><a href="{{asset('')}}class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.my_class')}}</a></li>
             </ul>
           </li>
           <li class="treeview">

@@ -23,6 +23,7 @@ $('#save-user').on('click', function() {
 			$('#modal-id').modal('toggle');
 			//thông báo thành công
 			toastr.success(response.message);
+			window.location.href = "/user";
 		} else { //nếu server trả về kết quả thất bại
 			//thông báo thất bại
 			toastr.error(response.message);

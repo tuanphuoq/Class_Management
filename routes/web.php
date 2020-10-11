@@ -25,4 +25,10 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::get('/', 'UserController@list');
 		Route::post('role', 'UserController@role');
 	});
+	Route::prefix('class')->group(function(){
+		Route::get('/', 'ClassController@list');
+		Route::get('/create', 'ClassController@create');
+		Route::post('/save', 'ClassController@save')->name('save');
+		Route::post('delete', 'ClassController@delete')->name('class.delete');
+	});
 });
