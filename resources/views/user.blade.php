@@ -50,6 +50,8 @@
 	  </div>
 	</div>
 	</div>
+
+	{{-- modal thay đổi quyền user --}}
 	<div class="modal fade" id="modal-id">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
