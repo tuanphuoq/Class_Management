@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Vaccine - Admin Page</title>
+  <title>{{ __('dict.app_name') }}</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{{asset('../css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{asset('../css/AdminLTE.min.css')}}">
@@ -78,7 +78,7 @@
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">Main Navigation</li>
           <li class="">
-            <a href="{{asset('')}}admin/user">
+            <a href="{{asset('')}}user">
               <i class="fa fa-user-circle-o" aria-hidden="true"></i> <span>{{__('dict.navbar.user_manager')}}</span>
             </a>
           </li>
