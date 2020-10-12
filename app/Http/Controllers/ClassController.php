@@ -104,4 +104,21 @@ class ClassController extends Controller
 			]);
 		}
 	}
+
+	// function search class
+	public function search(Request $req)
+	{
+		$classrooms;
+		$data = $req->searchData;
+		if ($req->selectType == "room") {
+			$classrooms = Classroom::where('room', 'LIKE', "%{$data}%")->get();
+		}
+		elseif ($req->selectType == "name") {
+			$classrooms = Classroom::where('class_name', 'LIKE', "%{$data}%")->get();
+		}
+		elseif ($req->selectType == "subject") {
+			$classrooms = Classroom::where('subject', 'LIKE', "%{$data}%")->get();
+		}
+		return view('class', ['classrooms' => $classrooms]);
+	}
 }

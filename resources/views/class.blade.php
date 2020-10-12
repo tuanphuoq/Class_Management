@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+@section('css')
+	<link rel="stylesheet" href="{{asset('../css/class.css')}}">
+@endsection
 @section('content')
 	<div class="row">
 	  <div class="col-xs-12">
@@ -6,12 +9,31 @@
 	      <div class="box-header">
 	        <h3 class="box-title">{{__('dict.class.class_manager')}}</h3>
 	      </div>
+	      <form method="GET" action="{{route('class.search')}}" id="form-search">
+	      	@csrf
+	      	<div class="search-title">Search Classroom</div>
+	      	<div class="search-class row">
+		      	<div class="col-lg-2 col-md-12">
+		      		<select class="form-control" name="selectType">
+			      		<option value="name">Search by class name</option>
+			      		<option value="room">Search by room</option>
+			      		<option value="subject">Search by subject</option>
+		      		</select>
+		      	</div>
+		      	<div class="col-lg-2 col-md-12">
+		      		<input type="text" name="searchData" class="form-control" placeholder="enter the value to find class">
+		      	</div>
+		      	<div class="col-lg-2 col-md-12">
+		      		<input type="submit" class="btn btn-info" value="Search">
+		      	</div>
+		      </div>
+	      </form>
 	      <div class="box-body">
 	      	{{-- nút tạo mới lớp học chỉ được hiển thị khi người dùng là admin hoặc teacher --}}
 	       	@if(Auth::user()->role == 1 || Auth::user()->role == 2)
 	       		<a data-toggle="modal" href='#class-modal' class="btn btn-sm btn-success">{{__('dict.class.add_class')}}</a>
 	       	@endif
-	       <div class="table-responsive">
+	       {{-- <div class="table-responsive">
 	        <table class="table table-hover table-responsive">
 	          <thead>
 	            <tr>
@@ -48,13 +70,37 @@
 
 	          </tbody>
 	        </table>
+	      </div> --}}
+
+	      {{-- test new ui --}}
+	      <div class="wrap">
+	      	@if (isset($classrooms) && count($classrooms) > 0)
+		           @foreach ($classrooms as $class)
+	      	<div class="col-lg-2 col-md-4 class-item">
+	      		<div class="body-class-img" style="background-image: url('{{ asset(\Storage::url($class->class_image)) }}');"></div>
+	      		<div class="header-class">
+	      			<h6>Class Name : {{$class->class_name}}</h6>
+	      			<h6>Code : {{$class->class_code}}</h6>
+	      			<h6>Room : {{$class->room}}</h6>
+	      		</div>
+	      		<h6 class="body-subject">Subject : {{$class->subject}}</h6>
+	      		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+	      		<div class="class-action">
+	      			<a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
+	            		class-id="{{$class->id}}" class-name="{{$class->class_name}}" subject="{{$class->subject}}" room="{{$class->room}}">Edit</a>
+	             	<button class="btn btn-danger btn-delete-class" class-id="{{$class->id}}" creator-id="{{Auth::user()->id}}">Delete</button>
+	      		</div>
+	      		@endif
+	      	</div>
+	      	@endforeach
+	           @endif
 	      </div>
 	    </div>
 	  </div>
 	</div>
 	</div>
 
-	{{-- modal thay đổi quyền user --}}
+	{{-- modal tạo mới, sửa class --}}
 	<div class="modal fade" id="class-modal">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
