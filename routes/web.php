@@ -32,4 +32,14 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::post('/save', 'ClassController@save')->name('save');
 		Route::post('delete', 'ClassController@delete')->name('class.delete');
 	});
+	Route::prefix('my-class')->group(function(){
+		Route::get('/', 'ClassController@myClass')->name('class.myClass');
+		Route::get('/{id}', 'ClassController@classByID');
+		Route::get('/{id}/student-list', 'ClassController@getStudentList');
+		Route::get('/{id}/accept-request', 'ClassController@acceptRequest');
+		Route::post('/accept-invite', 'ClassController@acceptInvite');
+		Route::post('/{id}/delete-student', 'ClassController@outClass');
+		Route::post('/{id}/add-student', 'ClassController@inviteClass');
+		Route::post('request', 'ClassController@requestJoin')->name('class.request');
+	});
 });

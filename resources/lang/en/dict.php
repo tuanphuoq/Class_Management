@@ -25,5 +25,15 @@ return [
         'add_class' => 'Add a new classroom',
         'delete_success' => 'Delete classroom successfully',
         'delete_fail' => "Delete classroom fail, You haven't permission to delete" ,
+        'join_class' => "Join the class" ,
+        'join' => "Join" ,
+        'class_null' => "Haven't classroom with this class code",
+        'requested' => "have sent your request join, waiting the confirm from teacher",
+        'out_success' => 'the student has left the classroom',
+        'out_fail' => 'have error, try agian!',
+        'invite_success' => 'Successful invite, please wait for confirmation',
+        'invite_fail' => 'Failed to join, please try again',
+        'accept_success' => 'The student has joined the class',
+        'accept_invite_success' => 'Joined the class',
     ]
 ];

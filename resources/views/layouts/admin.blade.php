@@ -92,7 +92,7 @@
               @if(Auth::user()->role == 1 || Auth::user()->role == 2)
               <li><a href="{{asset('')}}class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.class_manager')}}</a></li>
               @endif
-              <li><a href="{{asset('')}}class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.my_class')}}</a></li>
+              <li><a href="{{asset('')}}my-class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.my_class')}}</a></li>
             </ul>
           </li>
           <li class="treeview">
