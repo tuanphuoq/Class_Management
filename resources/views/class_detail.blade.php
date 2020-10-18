@@ -17,7 +17,7 @@
 	      	</div>
 	      	<div class="col-lg-6 group-btn">
 	      		@if(Auth::user()->role == 2 || Auth::user()->role == 1)
-	      		<button class="btn btn-box-header">tét</button>
+	      		{{-- <button class="btn btn-box-header">tét</button> --}}
 	      		<a data-toggle="modal" href='#request-modal' class="btn btn-box-header btn-success" id="btn-student-list">
 	      			Request Join <span class="badge badge-secondary">{{isset($sum) ? $sum : 0}}</span>
 	      		</a>
