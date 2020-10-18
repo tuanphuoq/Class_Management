@@ -115,3 +115,51 @@ $('#accept-request').on('click', function() {
 		toastr.error(response.message);
 	})
 })
+
+
+$('.edit-document').on('click', function() {
+	$('#upload-document-modal input[name="description"]').val($(this).attr('description'))
+	$('#upload-document-modal input[name="document_id"]').val($(this).attr('document-id'))
+	$('#upload-document-modal input[name="classFile"]').prop('required', false)
+	let temp = $('#upload-document-modal form').attr('action')
+	let action = temp + 'edit-document'
+	$('#upload-document-modal form').attr('action', action)
+})
+$('#add-document').on('click', function() {
+	// add new document
+	$('#upload-document-modal input[name="description"]').val()
+	let temp = $('#upload-document-modal form').attr('action')
+	let action = temp + 'upload'
+	$('#upload-document-modal form').attr('action', action)
+})
+$('.delete-document').on('click', function() {
+	var obj = $(this)
+	Swal.fire({
+	  title: 'Do you want to delete the document?',
+	  showCancelButton: true,
+	  confirmButtonText: `Delete`,
+	}).then((result) => {
+	  /* Read more about isConfirmed, isDenied below */
+	  if (result.isConfirmed) {
+	  	var documentID = $(this).attr('document-id');
+		url = document.URL + '/delete-document';
+	  	$.ajax({
+			url: url,
+			type: 'GET',
+			data: {
+				documentID: documentID
+			},
+		})
+		.done(function(response) {
+			// gửi thành công lên server
+			if(response.status) { //nếu server mời học viênthành công
+				// xóa document trên giao diện
+				let deleteObj = $(obj).parent().parent();
+				deleteObj.remove();
+				//thông báo thành công
+				Swal.fire('Deleted!', '', 'success')
+			}
+		})
+	  }
+	})
+});

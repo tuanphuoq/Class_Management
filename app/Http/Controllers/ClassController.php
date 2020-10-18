@@ -4,17 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Auth;
+use Storage;
+use Carbon\Carbon;
 use App\User;
 use App\Classroom;
 use App\AttendClass;
 use App\RequestJoin;
 use App\InviteJoin;
+use App\Documents;
 
 class ClassController extends Controller
 {
 	const CONFIRM = 0;
 	const WAIT = 0;
+	const YES = 1;
+	const NO = 2;
+
 
     public function list()
     {
@@ -185,17 +192,21 @@ class ClassController extends Controller
 		$class = Classroom::find($id);
 		$class->teacher_name = User::find($class->creator_id)->value('name');
 		$sum = RequestJoin::where('class_id', $id)->count();
+		$documents = Documents::where('class_id', $id)->orderBy('updated_at', 'DESC')->get();
+		// dd($documents);
 		if($sum > 0) {
 			$data = RequestJoin::join('users', 'users.id', '=', 'request_joins.student_id')->where('class_id', $id)->get();
 			// dd($data);
 			return view('class_detail', [
 				'class' => $class,
 				'sum' => $sum,
-				'data' => $data
+				'data' => $data,
+				'documents' => $documents
 			]);
 		}
 		return view('class_detail', [
-			'class' => $class
+			'class' => $class,
+			'documents' => $documents
 		]);
 	}
 
@@ -247,31 +258,102 @@ class ClassController extends Controller
 		
 	}
 
+	// giáo viên xác nhận cho phép tham gia lớp học
 	public function acceptRequest($classID, Request $req)
 	{
+		// lấy đối tượng đang chờ từ bảng request_joins
 		$request = RequestJoin::find($req->requestID);
+		// lấy các thuốc tính để insert vào bảng attend_class
 		$new['class_id'] = $request->class_id;
 		$new['student_id'] = $request->student_id;
 		$new['teacher_id'] = Auth::user()->id;
-		RequestJoin::find($req->requestID)->delete();
 		AttendClass::create($new);
+
+		$request->state = $this::YES;
+		$request->save();
 		return response()->json([
 			'status' => true,
 			'message' => __('dict.class.accept_success')
 		]);
 	}
 
+	// học viên xác nhận tham gia lớp học từ lời mời của giáo viên
 	public function acceptInvite(Request $req)
 	{
 		$invite = InviteJoin::find($req->inviteID);
 		$new['class_id'] = $invite->class_id;
 		$new['student_id'] = Auth::user()->id;
 		$new['teacher_id'] = $invite->teacher_id;
-		InviteJoin::find($req->inviteID)->delete();
 		AttendClass::create($new);
+
+		$invite->state = $this::YES;
+		$invite->save();
 		return response()->json([
 			'status' => true,
 			'message' => __('dict.class.accept_invite_success')
 		]);
+	}
+
+	public function uploadDocument($classID, Request $req)
+	{
+		$record['class_id'] = $classID;
+		$record['description'] = $req->description;
+		$file = $req->file('classFile');
+		// kiểm tra tài liệu đã có sẵn trên server hay chưa ( để dùng lại )
+		if(!Storage::exists($file->getClientOriginalName())) {
+			//chưa có - upload file lên server
+			$record['source'] = $this->storeDocument($file, $file->getClientOriginalName());
+		} else {
+			$record['source'] = 'documents/'.$file->getClientOriginalName();
+		}
+		$record['created_at'] = Carbon::now();
+		$record['updated_at'] = Carbon::now();
+		//create record
+		Documents::create($record);
+		// gọi lại giao diện lớp học
+		return $this->classByID($classID);
+		// call function to store document storeDocument($req->classFile, $fileName)
+	}
+	// hàm lưu trữ file upload
+    public function storeDocument($file, $fileName)
+    {
+		$disk = 'public';
+		$path=$file->storeAs('documents', $fileName, $disk);
+		return $path;
+	}
+
+	public function editDocument($classID, Request $req)
+	{
+		// kiểm tra người dùng có edit kèm file không
+		if(isset($req->classFile)) { //nếu có kèm theo file
+			$file = $req->file('classFile');
+			$document = Documents::find($req->document_id);
+			$document->description = $req->description;
+			// update time
+			$document->updated_at = Carbon::now();
+			// re-up file
+			if(!Storage::exists($file->getClientOriginalName())) {
+				$document->source = $this->storeDocument($file, $file->getClientOriginalName());
+			} else {
+				$document->source = 'documents/'.$file->getClientOriginalName();
+			}
+			$document->save();
+		} else {
+			$document = Documents::find($req->document_id);
+			$document->description = $req->description;
+			// update time
+			$document->updated_at = Carbon::now();
+			$document->save();
+		}
+		return redirect()->route('myclass', $classID);
+	}
+
+	public function deleteDocument($classID, Request $req)
+	{
+		$result = Documents::find($req->documentID)->delete();
+		if($result > 0) {
+			// delete success
+			return response()->json(['status' => true]);
+		}
 	}
 }

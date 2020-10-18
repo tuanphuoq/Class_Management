@@ -35,26 +35,30 @@
 	      	<hr>
 	      	<div class="document-title">Document <i class="fa fa-file-text" aria-hidden="true"></i></div>
 	      	<div class="document-list">
+	      		@if(isset($documents) && count($documents) > 0)
+	      		@foreach($documents as $item)
 	      		<div class="document-item">
-	      			<h6>description 1: </h6>
-	      			<i class="fa fa-book" aria-hidden="true"></i><a href="" > item1</a>
+	      			<h5>description : {{$item->description}}</h5>
+	      			<i class="fa fa-book" aria-hidden="true"></i><a href="" > {{$item->source}}</a>
+	      			@if(Auth::user()->id == 1 || Auth::user()->id == 2)
+	      			<div>
+	      				<span>{{$item->updated_at}}</span>&nbsp;
+	      				<a class="text-warning edit-document" data-toggle="modal" href='#upload-document-modal' 
+	      					description="{{$item->description}}" document-id="{{$item->id}}">
+	      					<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+	      				</a>
+	      				&nbsp;<button class="text-danger delete-document" document-id="{{$item->id}}">
+	      					<i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+	      			</div>
+	      			@endif
 	      		</div>
+	      		@endforeach
+	      		@endif
+	      		@if(Auth::user()->id == 1 || Auth::user()->id == 2)
 	      		<div class="document-item">
-	      			<h6>description 1: </h6>
-	      			<i class="fa fa-book" aria-hidden="true"></i><a href="" > item1</a>
+	      			<a data-toggle="modal" href='#upload-document-modal' class="btn btn-success" id="add-document">Add Document</a>
 	      		</div>
-	      		<div class="document-item">
-	      			<h6>description 1: </h6>
-	      			<i class="fa fa-book" aria-hidden="true"></i><a href="" > item1</a>
-	      		</div>
-	      		<div class="document-item">
-	      			<h6>description 1: </h6>
-	      			<i class="fa fa-book" aria-hidden="true"></i><a href="" > item1</a>
-	      		</div>
-	      		<div class="document-item">
-	      			<h6>description 1: </h6>
-	      			<i class="fa fa-book" aria-hidden="true"></i><a href="" > item1</a>
-	      		</div>
+	      		@endif
 	      	</div>
 	      	<hr>
 	      	<div class="comment-section">
@@ -217,25 +221,23 @@
 	</div>
 
 	{{-- modal upload tài liệu --}}
-	<div class="modal fade" id="student-list-modal">
+	<div class="modal fade" id="upload-document-modal">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title">Student List</h4>
+	        <h4 class="modal-title">Upload Document</h4>
 	      </div>
-	      <form method="POST" action="{{asset('')}}class/save" enctype="multipart/form-data">
+	      <form method="POST" action="{{asset('')}}my-class/{{$class->id}}/" enctype="multipart/form-data">
+	      	{{-- add new document : action + upload --}}
+	      	{{-- edit document : action + edit-document --}}
 	      <div class="modal-body">
 	        @csrf
-	        	<input type="hidden" class="form-control" value="" name="classID" required="required">
-	        	<label>Class Name</label>
-	        	<input type="text" class="form-control" id="" name="className" required="required">
-	        	<label>Room</label>
-	        	<input type="text" class="form-control" id="" name="classRoom" required="required">
-	        	<label>Subject</label>
-	        	<input type="text" class="form-control" id="" name="subject" required="required">
-	        	<label>Class Image</label>
-	        	<input type="file" class="form-control-file" id="" name="classFile" required="required">
+	        	<input type="hidden" name="document_id" value="">
+	        	<label>Description</label>
+	        	<input type="text" class="form-control" id="" name="description" required="required">
+	        	<label>Document File</label>
+	        	<input type="file" class="form-control-file" id="" name="classFile" required>
 	      </div>
 	      <div class="modal-footer">
 	        <button type="submit" class="btn btn-primary btn-save" id="">{{__('dict.action.save')}}</button>
@@ -247,5 +249,6 @@
 @endsection
 
 @section('foot')
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 	<script src="{{asset('')}}js/class_detail.js"></script>
 @endsection

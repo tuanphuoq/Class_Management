@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 15, 2020 lúc 05:44 PM
+-- Thời gian đã tạo: Th10 18, 2020 lúc 11:52 AM
 -- Phiên bản máy phục vụ: 10.1.40-MariaDB
 -- Phiên bản PHP: 7.3.5
 
@@ -78,6 +78,21 @@ INSERT INTO `classrooms` (`id`, `class_code`, `creator_id`, `room`, `class_name`
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `documents`
+--
+
+CREATE TABLE `documents` (
+  `id` int(11) NOT NULL,
+  `class_id` int(11) NOT NULL,
+  `description` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
+  `source` char(255) COLLATE utf32_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `invite_joins`
 --
 
@@ -86,6 +101,7 @@ CREATE TABLE `invite_joins` (
   `teacher_id` int(20) NOT NULL,
   `class_id` int(20) NOT NULL,
   `student_id` bigint(20) NOT NULL,
+  `state` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -139,6 +155,7 @@ CREATE TABLE `request_joins` (
   `id` int(20) UNSIGNED NOT NULL,
   `class_id` int(20) NOT NULL,
   `student_id` bigint(20) NOT NULL,
+  `state` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -147,8 +164,8 @@ CREATE TABLE `request_joins` (
 -- Đang đổ dữ liệu cho bảng `request_joins`
 --
 
-INSERT INTO `request_joins` (`id`, `class_id`, `student_id`, `created_at`, `updated_at`) VALUES
-(2, 2, 1, '2020-10-14 02:23:27', '2020-10-14 02:23:27');
+INSERT INTO `request_joins` (`id`, `class_id`, `student_id`, `state`, `created_at`, `updated_at`) VALUES
+(2, 2, 1, 0, '2020-10-14 02:23:27', '2020-10-14 02:23:27');
 
 -- --------------------------------------------------------
 
@@ -190,6 +207,12 @@ ALTER TABLE `attend_classes`
 -- Chỉ mục cho bảng `classrooms`
 --
 ALTER TABLE `classrooms`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `documents`
+--
+ALTER TABLE `documents`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -240,10 +263,16 @@ ALTER TABLE `classrooms`
   MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT cho bảng `documents`
+--
+ALTER TABLE `documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT cho bảng `invite_joins`
 --
 ALTER TABLE `invite_joins`
-  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `migrations`

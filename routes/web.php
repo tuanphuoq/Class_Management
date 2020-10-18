@@ -34,7 +34,10 @@ Route::group(['middleware'=>'auth'], function(){
 	});
 	Route::prefix('my-class')->group(function(){
 		Route::get('/', 'ClassController@myClass')->name('class.myClass');
-		Route::get('/{id}', 'ClassController@classByID');
+		Route::get('/{id}', 'ClassController@classByID')->name('myclass');
+		Route::post('/{id}/upload', 'ClassController@uploadDocument');
+		Route::post('/{id}/edit-document', 'ClassController@editDocument');
+		Route::get('/{id}/delete-document', 'ClassController@deleteDocument');
 		Route::get('/{id}/student-list', 'ClassController@getStudentList');
 		Route::get('/{id}/accept-request', 'ClassController@acceptRequest');
 		Route::post('/accept-invite', 'ClassController@acceptInvite');
