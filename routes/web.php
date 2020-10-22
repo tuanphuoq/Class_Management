@@ -20,7 +20,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
 Route::group(['middleware'=>'auth'], function(){
+	Route::get('/download/{path}/{file}', 'ClassController@downloadFile');
+	
 	Route::prefix('user')->group(function(){
 		Route::get('/', 'UserController@list');
 		Route::post('role', 'UserController@role');
@@ -44,5 +47,8 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::post('/{id}/delete-student', 'ClassController@outClass');
 		Route::post('/{id}/add-student', 'ClassController@inviteClass');
 		Route::post('request', 'ClassController@requestJoin')->name('class.request');
+
+		Route::post('/{id}/add-comment', 'ClassController@addComment');
+		Route::get('/{id}/delete-comment', 'ClassController@deleteComment');
 	});
 });

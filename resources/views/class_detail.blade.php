@@ -39,7 +39,7 @@
 	      		@foreach($documents as $item)
 	      		<div class="document-item">
 	      			<h5>description : {{$item->description}}</h5>
-	      			<i class="fa fa-book" aria-hidden="true"></i><a href="" > {{$item->source}}</a>
+	      			<i class="fa fa-book" aria-hidden="true"></i><a href="{{asset('')}}download/{{$item->source}}" > {{$item->source}}</a>
 	      			@if(Auth::user()->id == 1 || Auth::user()->id == 2)
 	      			<div>
 	      				<span>{{$item->updated_at}}</span>&nbsp;
@@ -63,7 +63,47 @@
 	      	<hr>
 	      	<div class="comment-section">
 	      		<div class="document-title">Comment <i class="fa fa-comments" aria-hidden="true"></i></div>
-
+	      		<div class="wrap-comment">
+	      			<div class="comment-form row">
+			            <div class="col-lg-2 avatar-comment">
+			                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
+			                <div class="commentor font-weight-bold" commentor="{{Auth::user()->id}}">
+			                	@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+			                	<span class="admin">ADMIN</span>
+			                	@endif
+			                	{{Auth::user()->name}}
+			                </div>
+			            </div>
+			            <div class="col-lg-10 content-comment">
+			                <textarea type="text" name="" id="comment-content" placeholder="input your comment..."></textarea>
+			            </div>
+			        </div>
+	      			<hr id="hr">
+	      			@if(isset($comments))
+	      			@foreach($comments as $item)
+			        <div class="comment-item row">
+			            <div class="col-lg-2 avatar-comment">
+			                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
+			                <div class="commentor font-weight-bold" commentor="{{$item->commentor}}">
+			                	@if($item->role == 1 || $item->role == 2)
+			                	<span class="admin">ADMIN</span>
+			                	@endif
+			                	{{$item->name}}
+			            	</div>
+			            </div>
+			            <div class="col-lg-10 content-comment">
+			                <textarea type="text" name="" id="" >{{$item->content}}</textarea>
+			                <div class="action">
+			                    <span>{{$item->created_at}}</span>
+			                    @if(Auth::user()->role == 1 || Auth::user()->role == 2)
+			                    <span class="text-danger delete-comment" comment-id="{{$item->id}}">Delete</span>
+			                    @endif
+			                </div>
+			            </div>
+			        </div>
+			        @endforeach
+			        @endif
+			    </div>
 	      	</div>
 	       {{-- <div class="table-responsive">
 	        <table class="table table-hover table-responsive">

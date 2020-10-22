@@ -163,3 +163,81 @@ $('.delete-document').on('click', function() {
 	  }
 	})
 });
+
+//add comment
+$('.comment-form #comment-content').on('keypress', function (e) {
+	// when press ENTER
+	if(e.keyCode  == 13){
+		let commentor = $('.comment-form .commentor').attr('commentor')
+		let content = $('.comment-form #comment-content').val()
+		let username = $('.comment-form .commentor').html()
+		let url = document.URL + '/add-comment';
+		console.log(content + username)
+        $.ajax({
+			url: url,
+			type: 'POST',
+			data: {
+				commentor: commentor,
+				content : content
+			},
+		})
+		.done(function(response) {
+			// gửi thành công lên server
+			if(response.status) { //nếu server mời học viênthành công
+				// xóa document trên giao diện
+				let html = '<div class="comment-item row">'+
+			            '<div class="col-lg-2 avatar-comment">'+
+			                '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">'+
+			                '<div class="commentor font-weight-bold">'+
+			                	username+
+			            	'</div></div>' +
+			            '<div class="col-lg-10 content-comment">' +
+			                '<textarea type="text" name="" id="" >' + content + '</textarea>'+
+			                '<div class="action"><span>now </span>'+
+			                    '<span class="text-danger delete-comment" comment-id="'+ response.id +'">Delete</span></div></div></div>'
+			    $('hr#hr').after(html)
+			    $('.comment-form #comment-content').val("")
+				//thông báo thành công
+				toastr.success(response.message);
+			}
+		})
+    }
+});
+
+$(document).on('click', '.delete-comment', function() {
+	var obj = $(this)
+	Swal.fire({
+	  title: 'Do you want to delete this comment?',
+	  showCancelButton: true,
+	  confirmButtonText: `Delete`,
+	}).then((result) => {
+	  /* Read more about isConfirmed, isDenied below */
+	  if (result.isConfirmed) {
+	  	var commentID = $(this).attr('comment-id');
+		url = document.URL + '/delete-comment';
+	  	$.ajax({
+			url: url,
+			type: 'GET',
+			data: {
+				commentID: commentID
+			},
+		})
+		.done(function(response) {
+			// gửi thành công lên server
+			if(response.status) { //nếu server mời học viênthành công
+				// xóa document trên giao diện
+				let deleteObj = $(obj).parent().parent().parent();
+				deleteObj.remove();
+				//thông báo thành công
+				Swal.fire('Deleted!', '', 'success')
+			}
+		})
+	  }
+	})
+})
+
+// fix lỗi đường dẫn khi submit trên modal
+var route = window.location.href
+$('#upload-document-modal').on('hidden.bs.modal', function (e) {
+  	window.location.replace(route);
+})

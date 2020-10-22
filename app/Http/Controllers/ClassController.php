@@ -14,6 +14,7 @@ use App\AttendClass;
 use App\RequestJoin;
 use App\InviteJoin;
 use App\Documents;
+use App\Comment;
 
 class ClassController extends Controller
 {
@@ -193,7 +194,21 @@ class ClassController extends Controller
 		$class->teacher_name = User::find($class->creator_id)->value('name');
 		$sum = RequestJoin::where('class_id', $id)->count();
 		$documents = Documents::where('class_id', $id)->orderBy('updated_at', 'DESC')->get();
-		// dd($documents);
+		$comments = Comment::select(
+				'users.id as user_id',
+				'users.name',
+				'users.role',
+				'comments.id',
+				'comments.commentor',
+				'comments.content',
+				'comments.created_at',
+				'comments.updated_at',
+			)
+			->join('users', 'users.id', '=', 'comments.commentor')
+			->where('comments.class_id', $id)
+			->orderBy('comments.created_at', 'DESC')
+			->get();
+		// dd($comments);
 		if($sum > 0) {
 			$data = RequestJoin::join('users', 'users.id', '=', 'request_joins.student_id')->where('class_id', $id)->get();
 			// dd($data);
@@ -201,12 +216,14 @@ class ClassController extends Controller
 				'class' => $class,
 				'sum' => $sum,
 				'data' => $data,
-				'documents' => $documents
+				'documents' => $documents,
+				'comments' => $comments,
 			]);
 		}
 		return view('class_detail', [
 			'class' => $class,
-			'documents' => $documents
+			'documents' => $documents,
+			'comments' => $comments,
 		]);
 	}
 
@@ -311,7 +328,7 @@ class ClassController extends Controller
 		//create record
 		Documents::create($record);
 		// gọi lại giao diện lớp học
-		return $this->classByID($classID);
+		return redirect()->route('myclass', $classID);
 		// call function to store document storeDocument($req->classFile, $fileName)
 	}
 	// hàm lưu trữ file upload
@@ -355,5 +372,35 @@ class ClassController extends Controller
 			// delete success
 			return response()->json(['status' => true]);
 		}
+	}
+
+	//add comment
+	public function addComment($classID, Request $req)
+	{
+		$record['class_id'] = $classID;
+		$record['commentor'] = $req->commentor;
+		$record['content'] = $req->content;
+		$record['created_at'] = Carbon::now();
+		$comment = Comment::create($record);
+		return response()->json([
+			'status' => true,
+			'message' => 'Add comment successfully',
+			'id' => $comment->id
+		]);
+	}
+
+	//delete comment
+	public function deleteComment($classID, Request $req)
+	{
+		$result = Comment::find($req->commentID)->delete();
+		if($result > 0) {
+			// delete success
+			return response()->json(['status' => true]);
+		}
+	}
+
+	public function downloadFile($path, $file)
+	{
+		return response()->download(storage_path("app/public/".$path."/".$file));
 	}
 }

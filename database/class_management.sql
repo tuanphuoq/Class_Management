@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 18, 2020 lúc 11:52 AM
+-- Thời gian đã tạo: Th10 22, 2020 lúc 06:42 PM
 -- Phiên bản máy phục vụ: 10.1.40-MariaDB
 -- Phiên bản PHP: 7.3.5
 
@@ -43,7 +43,7 @@ CREATE TABLE `attend_classes` (
 
 INSERT INTO `attend_classes` (`id`, `class_id`, `student_id`, `teacher_id`, `created_at`, `updated_at`) VALUES
 (1, 4, 2, 1, '2020-10-14 12:41:39', '0000-00-00 00:00:00'),
-(2, 4, 2, 1, '2020-10-15 08:31:44', '2020-10-15 08:31:44');
+(2, 1, 2, 1, '2020-10-22 15:47:13', '2020-10-15 08:31:44');
 
 -- --------------------------------------------------------
 
@@ -78,6 +78,31 @@ INSERT INTO `classrooms` (`id`, `class_code`, `creator_id`, `room`, `class_name`
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `comments`
+--
+
+CREATE TABLE `comments` (
+  `id` bigint(20) NOT NULL,
+  `class_id` int(11) NOT NULL,
+  `commentor` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `content` varchar(255) COLLATE utf32_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `comments`
+--
+
+INSERT INTO `comments` (`id`, `class_id`, `commentor`, `created_at`, `updated_at`, `content`) VALUES
+(1, 1, 1, '2020-10-22 05:46:03', '2020-10-22 05:46:03', 'value=\"test lorem na\"'),
+(2, 1, 1, '2020-10-22 05:54:44', '2020-10-22 05:54:44', 'test comment'),
+(3, 1, 1, '2020-10-22 05:55:14', '2020-10-22 05:55:14', 'test 2'),
+(9, 1, 2, '2020-10-22 08:49:02', '2020-10-22 08:49:02', 'test student');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `documents`
 --
 
@@ -89,6 +114,13 @@ CREATE TABLE `documents` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `documents`
+--
+
+INSERT INTO `documents` (`id`, `class_id`, `description`, `source`, `created_at`, `updated_at`) VALUES
+(4, 1, 'Đề cương đồ án', 'documents/DoAnCuoiKi-v3.pdf', '2020-10-22 09:42:00', '2020-10-22 09:42:00');
 
 -- --------------------------------------------------------
 
@@ -210,6 +242,12 @@ ALTER TABLE `classrooms`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Chỉ mục cho bảng `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Chỉ mục cho bảng `documents`
 --
 ALTER TABLE `documents`
@@ -263,10 +301,16 @@ ALTER TABLE `classrooms`
   MODIFY `id` int(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT cho bảng `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT cho bảng `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `invite_joins`

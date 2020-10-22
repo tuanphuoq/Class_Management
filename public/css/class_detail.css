@@ -34,3 +34,38 @@ hr{
     border: 0px;
     outline : none;
 }
+/*//comment*/
+.wrap-comment{
+    width: 90%;
+    margin: auto;
+}
+.avatar-comment{
+    display: flex;
+}
+.avatar-comment img{
+    width: auto;
+    height: 5rem;
+}
+.comment-item{
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.content-comment textarea{
+    height: 80%;
+    width: 100%;
+}
+.commentor{
+    padding-top: 10px;
+}
+.delete-comment{
+    cursor: pointer;
+}
+.delete-comment:hover{
+    text-decoration: underline;
+}
+.font-weight-bold{
+	font-weight: bold;
+}
+.admin{
+	background-color : yellow;
+}
