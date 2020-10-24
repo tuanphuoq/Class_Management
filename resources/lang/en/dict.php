@@ -22,6 +22,8 @@ return [
     'class' => [
         'class_manager' => 'Classroom Management',
         'my_class' => 'My Classroom',
+        'my_request' => 'My Request',
+        'request_list' => 'Request List',
         'add_class' => 'Add a new classroom',
         'delete_success' => 'Delete classroom successfully',
         'delete_fail' => "Delete classroom fail, You haven't permission to delete" ,
@@ -35,5 +37,10 @@ return [
         'invite_fail' => 'Failed to join, please try again',
         'accept_success' => 'The student has joined the class',
         'accept_invite_success' => 'Joined the class',
+    ],
+    'state' => [
+        '0' => "Waiting",
+        '1' => "Accepted",
+        '2' => "Cancelled",
     ]
 ];

@@ -1,10 +1,13 @@
 @extends('layouts.admin')
+@section('css')
+	<link rel="stylesheet" href="{{asset('../css/class.css')}}">
+@endsection
 @section('content')
 	<div class="row">
 	  <div class="col-xs-12">
 	    <div class="box">
-	      <div class="box-header">
-	        <h3 class="box-title">{{__('dict.navbar.user_manager')}}</h3>
+	      <div class="box-header text-center">
+	        <h3 class="box-title font-weight-bold p-1 font-30">{{__('dict.navbar.user_manager')}}</h3>
 	      </div>
 	      <div class="box-body">
 	       {{-- <a href="{{asset('')}}user/create" class="btn btn-sm btn-success">Add</a> --}}

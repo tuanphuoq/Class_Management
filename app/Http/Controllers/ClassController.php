@@ -403,4 +403,78 @@ class ClassController extends Controller
 	{
 		return response()->download(storage_path("app/public/".$path."/".$file));
 	}
+
+	public function getRequest()
+	{
+		$role = Auth::user()->role;
+		$userID = Auth::user()->id;
+		if($role == 1) {
+			$invites = InviteJoin::select(
+						'classrooms.class_name',
+						'classrooms.subject',
+						'invite_joins.state',
+						'invite_joins.student_id',
+						'invite_joins.teacher_id',
+					)
+					->join('classrooms', 'classrooms.id', '=', 'invite_joins.class_id')
+					->get();
+			$requests = RequestJoin::select(
+						'classrooms.class_name',
+						'classrooms.subject',
+						'request_joins.student_id',
+						'request_joins.state',
+					)
+					->join('classrooms', 'classrooms.id', '=', 'request_joins.class_id')
+					->get();
+			foreach ($invites as $item) {
+				$item = $this->insertName($item);
+			}
+			foreach ($requests as $item) {
+				$item = $this->insertName($item);
+			}
+		} else if ($role == 2) {
+			$invites = InviteJoin::select(
+						'classrooms.class_name',
+						'classrooms.subject',
+						'invite_joins.state',
+						'invite_joins.student_id',
+						'invite_joins.teacher_id',
+					)
+					->join('classrooms', 'classrooms.id', '=', 'invite_joins.class_id')
+					->where('invite_joins.teacher_id', $userID)
+					->get();
+			foreach ($invites as $item) {
+				$item = $this->insertName($item);
+			}
+			$requests = null;
+		} else if ($role == 3) {
+			$invites = null;
+			$requests = RequestJoin::select(
+						'classrooms.class_name',
+						'classrooms.subject',
+						'request_joins.student_id',
+						'request_joins.state',
+					)
+					->join('classrooms', 'classrooms.id', '=', 'request_joins.class_id')
+					->where('request_joins.student_id', $userID)
+					->get();
+			foreach ($requests as $item) {
+				$item = $this->insertName($item);
+			}
+		}
+		return view('my_request', [
+			'requests' => $requests,
+			'invites' => $invites
+		]);
+	}
+
+	public function insertName($obj)
+	{
+		if (isset($obj->teacher_id)) {
+			$obj->teacher_name = User::where('id', $obj->teacher_id)->value('name');
+		}
+		if (isset($obj->student_id)) {
+			$obj->student_name = User::where('id', $obj->student_id)->value('name');
+		}
+	}
 }

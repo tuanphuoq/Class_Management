@@ -35,6 +35,9 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::post('/save', 'ClassController@save')->name('save');
 		Route::post('delete', 'ClassController@delete')->name('class.delete');
 	});
+	Route::prefix('my-request')->group(function(){
+		Route::get('/', 'ClassController@getRequest');
+	});
 	Route::prefix('my-class')->group(function(){
 		Route::get('/', 'ClassController@myClass')->name('class.myClass');
 		Route::get('/{id}', 'ClassController@classByID')->name('myclass');

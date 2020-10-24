@@ -6,8 +6,8 @@
 	<div class="row">
 	  <div class="col-xs-12">
 	    <div class="box">
-	      <div class="box-header">
-	        <h3 class="box-title">
+	      <div class="box-header text-center">
+	        <h3 class="box-title font-weight-bold p-1 font-30">
 	        	{{__('dict.class.my_class')}}
 	        	@if(Auth::user()->role == 3)
 	        	<a data-toggle="modal" href='#invite-modal' class="btn btn-success">
@@ -88,7 +88,7 @@
 	      		</div>
 	      		@endif
 	      		<div class="view-class">
-	      			<a href="{{asset('')}}my-class/{{$class->id}}" class="btn btn-info">View</a>
+	      			<a href="{{asset('')}}my-class/{{$class->id}}" class="btn btn-info">View <i class="fa fa-eye" aria-hidden="true"></i></a>
 	      		</div>
 	      	</div>
 	      	@endforeach
@@ -151,7 +151,7 @@
 		          </thead>
 		          <tbody id="student-list-body">
 		          	@if(isset($inviteJoin))
-		          		{{$index = 1}}
+		          		<?php $index = 1 ?>
 		          		@foreach($inviteJoin as $value)
 		          		<tr>
 		          			<td>{{$index}}</td>
@@ -166,7 +166,7 @@
 		          				</button>
 		          			</td>
 		          		</tr>
-		          		{{$index++}}
+		          		<?php $index++ ?>
 		          		@endforeach
 		          	@endif
 		          </tbody>

@@ -1,3 +1,12 @@
+.p-1{
+	padding : 1rem;
+}
+.font-weight-bold{
+	font-weight: bold;
+}
+.font-30{
+	font-size : 30px !important;
+}
 .search-class {
 	padding : 0px 10px;
 }

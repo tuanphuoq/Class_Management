@@ -6,8 +6,8 @@
 	<div class="row">
 	  <div class="col-xs-12">
 	    <div class="box">
-	      <div class="box-header">
-	        <h3 class="box-title">{{__('dict.class.class_manager')}}</h3>
+	      <div class="box-header text-center">
+	        <h3 class="box-title font-weight-bold p-1 font-30">{{__('dict.class.class_manager')}}</h3>
 	      </div>
 	      <form method="GET" action="{{route('class.search')}}" id="form-search">
 	      	@csrf
