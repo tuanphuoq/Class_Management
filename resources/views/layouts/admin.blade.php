@@ -95,7 +95,7 @@
               <li><a href="{{asset('')}}my-class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.my_class')}}</a></li>
             </ul>
           </li>
-          <li class="treeview">
+          {{-- <li class="treeview">
             <a>
               <i class="fa fa-dashboard"></i> <span>Post</span>
               <span class="pull-right-container">
@@ -110,7 +110,7 @@
             <a href="{{asset('')}}admin/order">
               <i class="fa fa-circle-o" aria-hidden="true"></i> <span>Order</span>
             </a>
-          </li>
+          </li> --}}
         </ul>
       </section>
     </aside>
