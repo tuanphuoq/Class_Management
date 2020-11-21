@@ -160,7 +160,7 @@
 		          			<td>{{$value->subject}}</td>
 		          			<td>{{$value->room}}</td>
 		          			<td>
-		          				<button invite-id="{{$value->id}}" class="btn btn-success" id="accept-invite" 
+		          				<button invite-id="{{$value->id}}" class="btn btn-success accept-invite" 
 		          					class-id="{{$value->class_id}}" teacher-id="{{$value->teacher_id}}">
 		          					Accept
 		          				</button>

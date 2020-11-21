@@ -87,7 +87,7 @@ $('#join-class').on('click', function() {
 	}
 })
 
-$('#accept-invite').on('click', function() {
+$('.accept-invite').on('click', function() {
 	// đồng ý join vào lớp
 	var obj = $(this);
 	var inviteID = $(this).attr('invite-id')

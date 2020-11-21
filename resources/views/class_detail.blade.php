@@ -40,7 +40,7 @@
 	      		<div class="document-item">
 	      			<h5>description : {{$item->description}}</h5>
 	      			<i class="fa fa-book" aria-hidden="true"></i><a href="{{asset('')}}download/{{$item->source}}" > {{$item->source}}</a>
-	      			@if(Auth::user()->id == 1 || Auth::user()->id == 2)
+	      			@if(Auth::user()->role == 1 || Auth::user()->role == 2)
 	      			<div>
 	      				<span>{{$item->updated_at}}</span>&nbsp;
 	      				<a class="text-warning edit-document" data-toggle="modal" href='#upload-document-modal' 
@@ -54,7 +54,7 @@
 	      		</div>
 	      		@endforeach
 	      		@endif
-	      		@if(Auth::user()->id == 1 || Auth::user()->id == 2)
+	      		@if(Auth::user()->id == 1 || Auth::user()->role == 2)
 	      		<div class="document-item">
 	      			<a data-toggle="modal" href='#upload-document-modal' class="btn btn-success" id="add-document">Add Document</a>
 	      		</div>
@@ -225,7 +225,7 @@
 		          		<tr>
 		          			<td>{{$value->student_id}}</td>
 		          			<td>{{$value->name}}</td>
-		          			<td><button request-id="{{$value->id}}" class="btn btn-success" id="accept-request">Accept</button></td>
+		          			<td><button request-id="{{$value->id}}" class="btn btn-success accept-request">Accept</button></td>
 		          		</tr>
 		          		@endforeach
 		          	@endif

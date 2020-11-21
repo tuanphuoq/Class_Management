@@ -1,5 +1,6 @@
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-$('#btn-student-list').on('click', function() {
+
+$(document).on('click', '#btn-student-list', function() {
 	url = document.URL + '/student-list';
 	// dùng ajax để xóa lấy danh sách học viên
 	$.ajax({
@@ -12,6 +13,7 @@ $('#btn-student-list').on('click', function() {
 	})
 	.done(function(response) {
 		let i = 1;
+		console.log(response);
 		// đổ dữ liệu ra bảng trong model danh sách học viên
 		$(response).each(function() {
 			let tr = '<tr><td>'+i+'</td><td>'+this.name+'</td><td><button class="out-class btn btn-danger" student-id="'+this.student_id+'" class-id="'+this.class_id+'">out class</button></td></tr>';
@@ -86,7 +88,7 @@ $('#btn-add-student').on('click', function() {
 })
 
 // sự kiện đồng ý cho học viên join vào lớp
-$('#accept-request').on('click', function() {
+$('.accept-request').on('click', function() {
 	var obj = $(this);
 	var requestID = $(this).attr('request-id')
 	url = document.URL + '/accept-request';

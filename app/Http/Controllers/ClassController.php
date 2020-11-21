@@ -151,6 +151,7 @@ class ClassController extends Controller
 						'classrooms.room',
 						)
 						->where('invite_joins.student_id', '=', Auth::user()->id)
+						->where('invite_joins.state', 0)
 						->join('users', 'users.id', '=', 'invite_joins.teacher_id')
 						->join('classrooms', 'classrooms.id', '=', 'class_id')
 						->get();
@@ -191,8 +192,8 @@ class ClassController extends Controller
 	public function classByID($id)
 	{
 		$class = Classroom::find($id);
-		$class->teacher_name = User::find($class->creator_id)->value('name');
-		$sum = RequestJoin::where('class_id', $id)->count();
+		$class->teacher_name = User::where('id', $class->creator_id)->value('name');
+		$sum = RequestJoin::where('class_id', $id)->where('state', 0)->count();
 		$documents = Documents::where('class_id', $id)->orderBy('updated_at', 'DESC')->get();
 		$comments = Comment::select(
 				'users.id as user_id',
@@ -206,12 +207,12 @@ class ClassController extends Controller
 			)
 			->join('users', 'users.id', '=', 'comments.commentor')
 			->where('comments.class_id', $id)
-			->orderBy('comments.created_at', 'DESC')
+			->orderBy('comments.created_at', 'ASC')
 			->get();
-		// dd($comments);
 		if($sum > 0) {
-			$data = RequestJoin::join('users', 'users.id', '=', 'request_joins.student_id')->where('class_id', $id)->get();
-			// dd($data);
+			$data = RequestJoin::select('request_joins.student_id', 'request_joins.id', 'users.name')
+				->join('users', 'users.id', '=', 'request_joins.student_id')
+				->where('class_id', $id)->where('state', 0)->get();
 			return view('class_detail', [
 				'class' => $class,
 				'sum' => $sum,
