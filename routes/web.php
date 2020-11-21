@@ -25,7 +25,7 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::get('/download/{path}/{file}', 'ClassController@downloadFile');
 	
 	Route::prefix('user')->group(function(){
-		Route::get('/', 'UserController@list');
+		Route::get('/', 'UserController@list')->name('user');
 		Route::post('role', 'UserController@role');
 	});
 	Route::prefix('class')->group(function(){

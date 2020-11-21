@@ -102,9 +102,8 @@ class ClassController extends Controller
 	public function delete(Request $req)
 	{
 		$class = Classroom::find($req->classID);
-		// dd($class);
-		if($class->creator_id == $req->creatorID) {
-			// đây là người tạo ra lớp
+		if($class->creator_id == $req->creatorID || Auth::user()->role == 1) {
+			// đây là người tạo ra lớp hoặc là admin
 			$class->delete();
 			return response()->json([
 				'status' => true,
