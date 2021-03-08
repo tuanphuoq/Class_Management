@@ -53,6 +53,7 @@ hr{
 .content-comment textarea{
     height: 80%;
     width: 100%;
+    outline: none;
 }
 .commentor{
     padding-top: 10px;
@@ -60,7 +61,25 @@ hr{
 .delete-comment{
     cursor: pointer;
 }
+.reply-comment{
+    cursor: pointer;
+}
+.reply-sub-comment{
+    cursor: pointer;
+}
+.edit-comment{
+    cursor: pointer;
+}
 .delete-comment:hover{
+    text-decoration: underline;
+}
+.reply-comment:hover{
+    text-decoration: underline;
+}
+.reply-sub-comment:hover{
+    text-decoration: underline;
+}
+.edit-comment:hover{
     text-decoration: underline;
 }
 .font-weight-bold{
@@ -68,4 +87,21 @@ hr{
 }
 .admin{
 	background-color : yellow;
+}
+.px-2{
+	padding-right : 2rem;
+	padding-left : 2rem;
+}
+.px-1{
+	padding-right : 1rem;
+	padding-left : 1rem;
+}
+.reply-comment-form{
+	margin-left : 16%;
+}
+.content-comment textarea.edit-commented{
+	outline: none;
+}
+textarea#comment-content{
+	outline: none;
 }

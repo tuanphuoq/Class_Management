@@ -53,5 +53,10 @@ Route::group(['middleware'=>'auth'], function(){
 
 		Route::post('/{id}/add-comment', 'ClassController@addComment');
 		Route::get('/{id}/delete-comment', 'ClassController@deleteComment');
+		Route::post('/{id}/edit-comment', 'ClassController@editComment');
+		
+		Route::post('/{id}/add-sub-comment', 'CommentController@addSubComment');
+		Route::get('/{id}/delete-sub-comment', 'CommentController@deleteSubComment');
+		Route::post('/{id}/edit-sub-comment', 'CommentController@editSubComment');
 	});
 });

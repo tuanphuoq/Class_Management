@@ -64,7 +64,7 @@
 	      	<div class="comment-section">
 	      		<div class="document-title">Comment <i class="fa fa-comments" aria-hidden="true"></i></div>
 	      		<div class="wrap-comment">
-	      			<div class="comment-form row">
+	      			{{-- <div class="comment-form row">
 			            <div class="col-lg-2 avatar-comment">
 			                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
 			                <div class="commentor font-weight-bold" commentor="{{Auth::user()->id}}">
@@ -77,72 +77,104 @@
 			            <div class="col-lg-10 content-comment">
 			                <textarea type="text" name="" id="comment-content" placeholder="input your comment..."></textarea>
 			            </div>
-			        </div>
-	      			<hr id="hr">
+			        </div> 
+	      			<hr id="hr"> --}}
 	      			@if(isset($comments))
 	      			@foreach($comments as $item)
-			        <div class="comment-item row">
-			            <div class="col-lg-2 avatar-comment">
-			                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
-			                <div class="commentor font-weight-bold" commentor="{{$item->commentor}}">
-			                	@if($item->role == 1 || $item->role == 2)
-			                	<span class="admin">ADMIN</span>
-			                	@endif
-			                	{{$item->name}}
-			            	</div>
-			            </div>
-			            <div class="col-lg-10 content-comment">
-			                <textarea type="text" name="" id="" >{{$item->content}}</textarea>
-			                <div class="action">
-			                    <span>{{$item->created_at}}</span>
-			                    @if(Auth::user()->role == 1 || Auth::user()->role == 2)
-			                    <span class="text-danger delete-comment" comment-id="{{$item->id}}">Delete</span>
-			                    @endif
-			                </div>
-			            </div>
-			        </div>
+				        <div class="comment-item row" commentID="{{$item->id}}">
+				            <div class="col-lg-2 col-md-2 col-xs-4 avatar-comment">
+				                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
+				                <div class="commentor font-weight-bold" commentor="{{$item->commentor}}">
+				                	@if($item->role == 1)
+				                	<span class="admin">ADMIN</span>
+				                	@elseif($item->role == 2)
+				                	<span class="admin">TEACHER</span>
+				                	@endif
+				                	{{$item->name}}
+				            	</div>
+				            </div>
+				            <div class="col-lg-10 col-md-10 col-xs-8 content-comment">
+				                <textarea type="text" name="" class="edit-commented" readonly="readonly" comment-id="{{$item->id}}">{{$item->content}}</textarea>
+				                <div class="action">
+				                    <span>At {{$item->updated_at}}</span>
+				                    <span class="text-info reply-comment px-1" comment-id="{{$item->id}}">Reply</span>
+				                    @if(Auth::user()->id == $item->commentor)
+				                    <span class="text-warning edit-comment px-1" comment-id="{{$item->id}}">Edit</span>
+				                    @endif
+				                    @if(Auth::user()->role == 1 || Auth::user()->role == 2)
+				                    <span class="text-danger delete-comment px-1" comment-id="{{$item->id}}">Delete</span>
+				                    @endif
+				                </div>
+				            </div>
+				        </div>
+
+				        <div class="sub-comment-{{$item->id}}">
+				        @if(isset($item->subComment))
+				        	@foreach($item->subComment as $item1)
+					        	<div class="row reply-comment-form">
+								    <div class="col-lg-2 avatar-comment">
+					                	<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
+						                <div class="commentor font-weight-bold" commentor="{{$item1->commentor}}">
+						                	@if($item1->role == 1)
+						                	<span class="admin">ADMIN</span>
+						                	@elseif($item1->role == 2)
+						                	<span class="admin">TEACHER</span>
+						                	@endif
+						                	{{$item->name}}
+						            	</div>
+					            	</div>
+						            <div class="col-lg-10 content-comment">
+						                <textarea type="text" name="" id="reply-comment-content" readonly="readonly" parent-comment-id="{{$item->id}}" sub-comment-id="{{$item1->id}}">{{$item1->content}}</textarea>
+					                	<div class="action">
+						                    <span>At {{$item1->updated_at}}</span>
+						                    <span class="text-info reply-sub-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Reply</span>
+						                    @if(Auth::user()->id == $item1->commentor)
+						                    <span class="text-warning edit-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Edit</span>
+						                    @endif
+						                    @if(Auth::user()->role == 1 || Auth::user()->role == 2)
+						                    <span class="text-danger delete-comment px-1" comment-id="{{$item->id}}" sub-comment-id="{{$item1->id}}">Delete</span>
+						                    @endif
+						                </div>
+						            </div>
+					            </div>
+				            @endforeach
+				        @endif
+				        </div>
 			        @endforeach
 			        @endif
+			        <hr id="hr">
+			        <div class="comment-form row">
+			            <div class="col-lg-2 avatar-comment">
+			                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
+			                <div class="commentor font-weight-bold" commentor="{{Auth::user()->id}}">
+			                	@if(Auth::user()->role == 1)
+			                	<span class="admin">ADMIN</span>
+			                	@elseif($item->role == 2)
+			                	<span class="admin">TEACHER</span>
+			                	@endif
+			                	<span class="name">{{Auth::user()->name}}</span>
+			                </div>
+			            </div>
+			            <div class="col-lg-10 content-comment">
+			                <textarea type="text" name="" id="comment-content" placeholder="input your comment..."></textarea>
+			            </div>
+			        </div>
+			        {{-- <div class="comment-form row reply-comment-form">
+			            <div class="col-lg-2 avatar-comment">
+			                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">
+			                <div class="commentor font-weight-bold" commentor="{{Auth::user()->id}}">
+			                	@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+			                	<span class="admin">ADMIN</span>
+			                	@endif
+			                	<span class="name">{{Auth::user()->name}}</span>
+			                </div>
+			            </div>
+			            <div class="col-lg-10 content-comment">
+			                <textarea type="text" name="" id="comment-content" placeholder="input your comment..."></textarea>
+			            </div>
+			        </div> --}}
 			    </div>
 	      	</div>
-	       {{-- <div class="table-responsive">
-	        <table class="table table-hover table-responsive">
-	          <thead>
-	            <tr>
-	              <th>#</th>
-	              <th>Class Name</th>
-	              <th>Class Code</th>
-	              <th>Subject</th>
-	              <th>Room</th>
-	              <th>Class Image</th>
-	              <th>Action</th>
-	            </tr>
-	          </thead>
-	          <tbody>
-	           @if (isset($classrooms) && count($classrooms) > 0)
-		           @foreach ($classrooms as $class)
-		           <tr>
-		           <td>{{$class->id}}</td>
-		           <td>{{$class->class_name}}</td>
-		           <td>{{$class->class_code}}</td>
-		           <td>{{$class->subject}}</td>
-		           <td>{{$class->room}}</td>
-		           <td><img class="class-image" style="width: 50px; height: 50px;" src="{{ asset(\Storage::url($class->class_image)) }}"></td>
-		           <td>
-		           		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
-		            	<a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
-		            		class-id="{{$class->id}}" class-name="{{$class->class_name}}" subject="{{$class->subject}}" room="{{$class->room}}">Edit</a>
-		             	<button class="btn btn-danger btn-delete-class" class-id="{{$class->id}}" creator-id="{{Auth::user()->id}}">Delete</button>
-		             	@endif
-		           </td>
-		           </tr>
-		          
-		           @endforeach
-	           @endif
-
-	          </tbody>
-	        </table>
-	      </div> --}}
 
 	      {{-- test new ui --}}
 	      <div class="wrap">

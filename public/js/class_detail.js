@@ -13,7 +13,6 @@ $(document).on('click', '#btn-student-list', function() {
 	})
 	.done(function(response) {
 		let i = 1;
-		console.log(response);
 		// đổ dữ liệu ra bảng trong model danh sách học viên
 		$(response).each(function() {
 			let tr = '<tr><td>'+i+'</td><td>'+this.name+'</td><td><button class="out-class btn btn-danger" student-id="'+this.student_id+'" class-id="'+this.class_id+'">out class</button></td></tr>';
@@ -118,7 +117,7 @@ $('.accept-request').on('click', function() {
 	})
 })
 
-
+// Document section
 $('.edit-document').on('click', function() {
 	$('#upload-document-modal input[name="description"]').val($(this).attr('description'))
 	$('#upload-document-modal input[name="document_id"]').val($(this).attr('document-id'))
@@ -167,14 +166,15 @@ $('.delete-document').on('click', function() {
 });
 
 //add comment
-$('.comment-form #comment-content').on('keypress', function (e) {
+
+// add new parent comment
+$(document).on('keypress', '.comment-form #comment-content', function (e) {
 	// when press ENTER
-	if(e.keyCode  == 13){
+	var content = $('.comment-form #comment-content').val().trim()
+	if(e.keyCode  == 13 && content != ""){
 		let commentor = $('.comment-form .commentor').attr('commentor')
-		let content = $('.comment-form #comment-content').val()
 		let username = $('.comment-form .commentor').html()
 		let url = document.URL + '/add-comment';
-		console.log(content + username)
         $.ajax({
 			url: url,
 			type: 'POST',
@@ -188,24 +188,123 @@ $('.comment-form #comment-content').on('keypress', function (e) {
 			if(response.status) { //nếu server mời học viênthành công
 				// xóa document trên giao diện
 				let html = '<div class="comment-item row">'+
-			            '<div class="col-lg-2 avatar-comment">'+
+			            '<div class="col-lg-2 col-xs-4 avatar-comment">'+
 			                '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">'+
 			                '<div class="commentor font-weight-bold">'+
 			                	username+
 			            	'</div></div>' +
-			            '<div class="col-lg-10 content-comment">' +
+			            '<div class="col-lg-10 col-xs-8 content-comment">' +
 			                '<textarea type="text" name="" id="" >' + content + '</textarea>'+
 			                '<div class="action"><span>now </span>'+
-			                    '<span class="text-danger delete-comment" comment-id="'+ response.id +'">Delete</span></div></div></div>'
-			    $('hr#hr').after(html)
+			                    '<span class="text-warning edit-comment px-1" comment-id="'+ response.id +'">Edit</span>'+
+			                    '<span class="text-danger delete-comment px-1" comment-id="'+ response.id +'">Delete</span>'+
+			                    '</div></div></div>'
+			    $('hr#hr').before(html)
 			    $('.comment-form #comment-content').val("")
 				//thông báo thành công
-				toastr.success(response.message);
+				console.log(response.message);
 			}
 		})
     }
 });
 
+// add-edit new child comment
+$(document).on('keypress', '#reply-comment-content', function (e) {
+	let content = $(this).val().trim()
+	let parentCommentID = $(this).attr('parent-comment-id')
+	if(e.keyCode  == 13 && content != ""){
+		let obj = $(this)
+		let subComment = $(this).attr('sub-comment-id')
+		if (subComment == null) {
+			//add sub comment
+			let url = document.URL + '/add-sub-comment';
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: {
+					parent_id : parentCommentID,
+					content : content
+				},
+			})
+			.done(function(response) {
+				// gửi thành công lên server
+				if(response.status) { //nếu server add sub comment thành công
+					// update value sub comment
+					$(obj).val(content)
+					$(obj).prop("readonly" , "true")
+					$(obj).attr("sub-comment-id" , response.id)
+					let html = '<div class="action"><span>now </span>'+
+				                '<span class="text-warning edit-comment px-1" comment-id="'+ parentCommentID +'" sub-comment-id="'+ response.id +'">Edit</span>'+
+				                '<span class="text-danger delete-comment px-1" comment-id="'+ parentCommentID +'" sub-comment-id="'+ response.id +'">Delete</span>'+
+				                '</div></div></div>'
+				    $(obj).after(html)
+					//thông báo thành công
+					console.log(response.message);
+				} else {
+					toastr.error(response.message);
+				}
+			})
+		} else {
+			//edit sub comment
+			let url = document.URL + '/edit-sub-comment';
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: {
+					parent_id : parentCommentID,
+					sub_comment_id : subComment,
+					content : content
+				},
+			})
+			.done(function(response) {
+				// gửi thành công lên server
+				if(response.status) { //nếu server edit sub comment thành công
+					// update value sub comment
+					$(obj).val(content)
+					$(obj).prop("readonly" , "true")
+					//thông báo thành công
+					console.log(response.message);
+				} else {
+					toastr.error(response.message);
+				}
+			})
+		}
+	}
+});
+
+//edit comment
+$(document).on('keypress', '.content-comment .edit-commented', function (e) {
+	let obj = $(this)
+	let content = $(this).val().trim()
+	// edit parent comment
+	if(e.keyCode  == 13 && content != ""){
+		var commentID = $(this).attr('comment-id');
+
+		//edit comment
+		let url = document.URL + '/edit-comment'
+		//send to server
+		$.ajax({
+			url: url,
+			type: 'POST',
+			data: {
+				comment_id : commentID,
+				content : content
+			},
+		})
+		.done(function(response) {
+			// gửi thành công lên server
+			if(response.status) { //nếu server edit comment thành công
+				// update value
+				$(obj).val(content)
+				$(obj).prop("readonly" , "true")
+			} else {
+				toastr.error(response.message);
+			}
+		})
+	}
+});
+
+//delete comment
 $(document).on('click', '.delete-comment', function() {
 	var obj = $(this)
 	Swal.fire({
@@ -213,30 +312,93 @@ $(document).on('click', '.delete-comment', function() {
 	  showCancelButton: true,
 	  confirmButtonText: `Delete`,
 	}).then((result) => {
-	  /* Read more about isConfirmed, isDenied below */
-	  if (result.isConfirmed) {
-	  	var commentID = $(this).attr('comment-id');
-		url = document.URL + '/delete-comment';
-	  	$.ajax({
-			url: url,
-			type: 'GET',
-			data: {
-				commentID: commentID
-			},
-		})
-		.done(function(response) {
-			// gửi thành công lên server
-			if(response.status) { //nếu server mời học viênthành công
-				// xóa document trên giao diện
-				let deleteObj = $(obj).parent().parent().parent();
-				deleteObj.remove();
-				//thông báo thành công
-				Swal.fire('Deleted!', '', 'success')
-			}
-		})
-	  }
+		/* Read more about isConfirmed, isDenied below */
+		if (result.isConfirmed) {
+		  	var commentID = $(this).attr('comment-id');
+		  	var subCommentID = $(this).attr('sub-comment-id');
+		  	if (subCommentID == null) {
+		  		//delete parent comment
+				url = document.URL + '/delete-comment';
+			  	$.ajax({
+					url: url,
+					type: 'GET',
+					data: {
+						commentID: commentID
+					},
+				})
+				.done(function(response) {
+					// gửi thành công lên server
+					if(response.status) { //nếu server xóa comment thành công
+						// xóa comment trên giao diện
+						let deleteObj = $(obj).parent().parent().parent();
+						deleteObj.remove();
+						var position = '.sub-comment-'+commentID
+
+						//delete sub comment
+						$(position).remove()
+					}
+				})
+		  	} else {
+		  		//delete sub comment
+		  		url = document.URL + '/delete-sub-comment';
+			  	$.ajax({
+					url: url,
+					type: 'GET',
+					data: {
+						commentID: commentID,
+						subCommentID: subCommentID
+					},
+				})
+				.done(function(response) {
+					// gửi thành công lên server
+					if(response.status) { //nếu server xóa comment thành công
+						// xóa comment trên giao diện
+						let deleteObj = $(obj).parent().parent().parent();
+						deleteObj.remove();
+					}
+				})
+		  	}	
+		}
 	})
 })
+
+//reply comment
+$(document).on('click', '.reply-comment', function() {
+	var commentorID = $('.comment-form .commentor').attr('commentor')
+	var name = $('.comment-form .commentor span.name').text()
+	var commentID = $(this).parents('.comment-item').attr('commentID')
+	var position = '.sub-comment-'+commentID
+
+	var html = '<div class="row reply-comment-form">'+
+			    '<div class="col-lg-2 avatar-comment">'+
+                '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">'+
+                '<div class="commentor font-weight-bold" commentor="'+ commentorID +'">'+
+                	'<span class="name">'+ name +'</span></div></div><div class="col-lg-10 content-comment">'+
+                '<textarea type="text" name="" id="reply-comment-content" placeholder="input your comment..." parent-comment-id="'+commentID+'"></textarea>'+'</div></div>'
+    $(position).append(html)
+})
+
+//reply sub comment
+$(document).on('click', '.reply-sub-comment', function() {
+	var commentorID = $('.comment-form .commentor').attr('commentor')
+	var name = $('.comment-form .commentor span.name').text()
+	var commentID = $(this).attr('comment-id')
+	var position = '.sub-comment-'+commentID
+	var html = '<div class="row reply-comment-form">'+
+			    '<div class="col-lg-2 avatar-comment">'+
+                '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">'+
+                '<div class="commentor font-weight-bold" commentor="'+ commentorID +'">'+
+                	'<span class="name">'+ name +'</span></div></div><div class="col-lg-10 content-comment">'+
+                '<textarea type="text" name="" id="reply-comment-content" placeholder="input your comment..." parent-comment-id="'+commentID+'"></textarea>'+'</div></div>'
+    $(position).append(html)
+})
+
+//edit comment
+$(document).on('click', '.edit-comment', function() {
+	let textarea = $(this).parents('.content-comment').find('textarea')
+	$(this).parents('.content-comment').find('textarea').prop('readonly', false)
+	$(this).parents('.content-comment').find('textarea').focus();
+});
 
 // fix lỗi đường dẫn khi submit trên modal
 var route = window.location.href

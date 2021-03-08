@@ -15,6 +15,7 @@ use App\RequestJoin;
 use App\InviteJoin;
 use App\Documents;
 use App\Comment;
+use App\SubComment;
 
 class ClassController extends Controller
 {
@@ -208,6 +209,29 @@ class ClassController extends Controller
 			->where('comments.class_id', $id)
 			->orderBy('comments.created_at', 'ASC')
 			->get();
+
+		foreach ($comments as $item) {
+			$subComment = SubComment::select(
+				'users.id as user_id',
+				'users.name',
+				'users.role',
+				'sub_comments.id',
+				'sub_comments.parent_comment_id',
+				'sub_comments.commentor',
+				'sub_comments.content',
+				'sub_comments.created_at',
+				'sub_comments.updated_at',
+			)
+			->join('users', 'users.id', '=', 'sub_comments.commentor')
+			->where('parent_comment_id', $item->id)
+			->orderBy('sub_comments.created_at', 'ASC')
+			->get();
+			if (count($subComment) > 0) {
+				// $item->subComment = array();
+				$item->subComment = $subComment;
+			}	
+		}
+
 		if($sum > 0) {
 			$data = RequestJoin::select('request_joins.student_id', 'request_joins.id', 'users.name')
 				->join('users', 'users.id', '=', 'request_joins.student_id')
@@ -225,6 +249,18 @@ class ClassController extends Controller
 			'documents' => $documents,
 			'comments' => $comments,
 		]);
+	}
+
+	public function addSubComment($comments)
+	{
+		$comments[0]->subComment = "hihi";
+		$comments['subComment'] = [];
+		foreach ($comments as $item) {
+			$subComment = SubComment::where('parent_comment_id', $item->id)->get();
+			if (count($subComment) > 0) {
+				array_push($comments['subComment'], $subComment);
+			}	
+		}
 	}
 
 	public function getStudentList($classID)
@@ -389,10 +425,33 @@ class ClassController extends Controller
 		]);
 	}
 
+	//edit comment
+	public function editComment(Request $req)
+	{
+		$comment = Comment::find($req->comment_id);
+		if ($comment) {
+			$comment->content = $req->content;
+			if ($comment->save()) {
+				return response()->json(['status' => true]);
+			} else {
+				return response()->json([
+					'status' => false,
+					'message' => 'Edit comment failed'
+				]);
+			}
+		} else {
+			return response()->json([
+				'status' => false,
+				'message' => 'Edit comment failed'
+			]);
+		}
+	}
+
 	//delete comment
-	public function deleteComment($classID, Request $req)
+	public function deleteComment(Request $req)
 	{
 		$result = Comment::find($req->commentID)->delete();
+		$sub = SubComment::where('parent_comment_id', $req->commentID)->delete();
 		if($result > 0) {
 			// delete success
 			return response()->json(['status' => true]);
