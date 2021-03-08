@@ -2,6 +2,7 @@ $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('conten
 
 $(document).on('click', '#btn-student-list', function() {
 	url = document.URL + '/student-list';
+	role = $(this).attr('role')
 	// dùng ajax để xóa lấy danh sách học viên
 	$.ajax({
 		url: url,
@@ -15,9 +16,16 @@ $(document).on('click', '#btn-student-list', function() {
 		let i = 1;
 		// đổ dữ liệu ra bảng trong model danh sách học viên
 		$(response).each(function() {
-			let tr = '<tr><td>'+i+'</td><td>'+this.name+'</td><td><button class="out-class btn btn-danger" student-id="'+this.student_id+'" class-id="'+this.class_id+'">out class</button></td></tr>';
-			i++;
-			$('#student-list-body').append(tr);
+			if (role == 1 || role == 2) {
+				let tr = '<tr><td>'+i+'</td><td>'+this.name+'</td><td>'+this.email+'</td><td><button class="out-class btn btn-danger" student-id="'+this.student_id+'" class-id="'+this.class_id+'">out class</button></td></tr>';
+				i++;
+				$('#student-list-body').append(tr);
+			} else {
+				let tr = '<tr><td>'+i+'</td><td>'+this.name+'</td><td>'+this.email+'</td></tr>';
+				i++;
+				$('#student-list-body').append(tr);
+			}
+			
 		})
 	})
 })

@@ -118,6 +118,8 @@
 	        	<input type="text" class="form-control" id="" name="classRoom" required="required">
 	        	<label>Subject</label>
 	        	<input type="text" class="form-control" id="" name="subject" required="required">
+	        	<label>Description</label>
+	        	<textarea class="form-control" name="description" rows="8"></textarea>
 	        	<label>Class Image</label>
 	        	<input type="file" class="form-control-file" id="" name="classFile" required="required">
 	      </div>

@@ -46,6 +46,7 @@ class ClassController extends Controller
     			$class->class_name = $req->className;
 	    		$class->room = $req->classRoom;
 	    		$class->subject = $req->subject;
+	    		$class->description = $req->description;    		
 	    		// trong trường hợp edit mà muốn sửa lại file hình ảnh thì mới thực hiện thay đổi ảnh
 	    		if(isset($req->classFile)) {
 	    			$class->class_image = $this->saveImg($req);

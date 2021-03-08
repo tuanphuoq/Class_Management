@@ -15,7 +15,7 @@
 			        <h3 class="box-title">Room : {{$class->room}}</h3>
 			      </div>
 	      	</div>
-	      	<div class="col-lg-6 group-btn">
+	      	<div class="col-lg-6 group-btn text-right">
 	      		@if(Auth::user()->role == 2 || Auth::user()->role == 1)
 	      		{{-- <button class="btn btn-box-header">tét</button> --}}
 	      		<a data-toggle="modal" href='#request-modal' class="btn btn-box-header btn-success" id="btn-student-list">
@@ -24,16 +24,24 @@
 	      		<a data-toggle="modal" href='#add-student-modal' class="btn btn-box-header btn-success">
 	      			Add Student  &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
 	      		</a>
-	      		<a data-toggle="modal" href='#class-modal' class="btn btn-box-header btn-success" id="btn-student-list">
+	      		@endif
+	      		<a data-toggle="modal" href='#class-modal' class="btn btn-box-header btn-success" id="btn-student-list" role="{{Auth::user()->role}}">
 	      			Student List  &nbsp;<i class="fa fa-users" aria-hidden="true"></i>
 	      		</a>
-	      		@endif
 	      	</div>
 	      </div>
 	      <div class="box-body">
 	      	<div class="teacher-name">Teacher : <span class="name">{{$class->teacher_name}}</span></div>
+	      	<div>
+	      		<div><span class="text-danger">(*)</span> This description of subject : {{$class->description ? $class->description : ""}}</div>
+	      		<div><span class="text-danger">(*)</span> Make sure to complete assignments requested by the teacher in the assignment area</div>
+	      		<div><span class="text-danger">(*)</span> All references of the subject are updated by the teacher in the documentation area</div>
+	      		<div><span class="text-danger">(*)</span> Any questions about the topic can leave comments in the comments</div>
+	      	</div>
 	      	<hr>
-	      	<div class="document-title">Document <i class="fa fa-file-text" aria-hidden="true"></i></div>
+	      	<div class="document-title">Assignments <i class="fa fa-briefcase" aria-hidden="true"></i></div>
+	      	<hr>
+	      	<div class="document-title">Documents <i class="fa fa-file-text" aria-hidden="true"></i></div>
 	      	<div class="document-list">
 	      		@if(isset($documents) && count($documents) > 0)
 	      		@foreach($documents as $item)
@@ -101,7 +109,7 @@
 				                    @if(Auth::user()->id == $item->commentor)
 				                    <span class="text-warning edit-comment px-1" comment-id="{{$item->id}}">Edit</span>
 				                    @endif
-				                    @if(Auth::user()->role == 1 || Auth::user()->role == 2)
+				                    @if(Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->id == $item->commentor)
 				                    <span class="text-danger delete-comment px-1" comment-id="{{$item->id}}">Delete</span>
 				                    @endif
 				                </div>
@@ -120,7 +128,7 @@
 						                	@elseif($item1->role == 2)
 						                	<span class="admin">TEACHER</span>
 						                	@endif
-						                	{{$item->name}}
+						                	{{$item1->name}}
 						            	</div>
 					            	</div>
 						            <div class="col-lg-10 content-comment">
@@ -131,7 +139,7 @@
 						                    @if(Auth::user()->id == $item1->commentor)
 						                    <span class="text-warning edit-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Edit</span>
 						                    @endif
-						                    @if(Auth::user()->role == 1 || Auth::user()->role == 2)
+						                    @if(Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->id == $item1->commentor)
 						                    <span class="text-danger delete-comment px-1" comment-id="{{$item->id}}" sub-comment-id="{{$item1->id}}">Delete</span>
 						                    @endif
 						                </div>
@@ -219,7 +227,10 @@
 		            <tr>
 		              <th>Index</th>
 		              <th>Student Name</th>
+		              <th>Email</th>
+		              @if(Auth::user()->role == 1 || Auth::user()->role == 2)
 		              <th>Action</th>
+		              @endif
 		            </tr>
 		          </thead>
 		          <tbody id="student-list-body"></tbody>

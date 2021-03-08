@@ -29,6 +29,9 @@ hr{
 	color : white;
 	font-weight : bold;
 }
+#add-document{
+	margin-top : 1rem;
+}
 .delete-document{
 	background: none;
     border: 0px;
