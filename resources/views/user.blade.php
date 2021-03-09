@@ -37,7 +37,9 @@
 		           <td>{{__('dict.role.3')}}</td>
 		           @endif
 		           <td>
+		           	@if ($user->role != 1)
 		            <a class="btn btn-success btn-change" data-toggle="modal" href='#modal-id' data-id="{{$user->id}}">Change Role</a>
+		            @endif
 		             {{-- <a href="{{asset('')}}admin/user/edit/{{$user->id}}" class="btn btn-warning">Edit</a> --}}
 		             {{-- <button class="btn btn-danger btn-delete" data-id={{$user->id}}>Delete</button> --}}
 		           </td>

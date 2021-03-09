@@ -22,6 +22,51 @@
 hr{
 	color : gray;
 }
+/*====assignment=======*/
+#add-assignment{
+	margin-top : 1rem;
+}
+.assignment-row{
+	display : flex;
+	flex-wrap : wrap;
+	justify-content:space-between;
+}
+.assignment-item{
+	display: flex;
+	padding : 0.5rem;
+	width: 19%;
+	border : 1px solid #3c8dbc;
+	color : #000;
+}
+@media (max-width: 767px) {
+	.assignment-item{
+		width: 49%;
+	}
+	.group-btn{
+		text-align:center !important;
+	}
+}
+.assignment-item .content{
+	width: 70%;
+}
+.assignment-item .action{
+	width: 20%;
+}
+.assignment-item i{
+	color : #3c8dbc !important;
+	margin : 0rem 1rem;
+}
+.my-1{
+	margin-top : 1rem;
+	margin-bottom : 1rem;
+}
+.text-danger{
+	color : red !important;
+}
+.des{
+	font-size: 20px;
+}
+/*========================*/
 .document-title{
 	font-size : 24px;
 }
@@ -99,6 +144,10 @@ hr{
 	padding-right : 1rem;
 	padding-left : 1rem;
 }
+.py-1{
+	padding-top : 1rem;
+	padding-bottom : 1rem;
+}
 .reply-comment-form{
 	margin-left : 16%;
 }
@@ -107,4 +156,73 @@ hr{
 }
 textarea#comment-content{
 	outline: none;
+}
+/*========================== ASSIGNMENT ============================*/
+#submit-list{
+	list-style: none;
+}
+#submit-list li{
+	padding : 1rem 0rem;
+}
+.submit-list{
+	display: flex;
+	flex-wrap: wrap;
+}
+.submit-list i{
+	margin-right : 1rem;
+}
+.submit-list .index{
+	width : 5%;
+}
+.submit-list .name{
+	width: 15%;
+}
+.submit-list .email{
+	width: 15%;
+}
+.submit-list .file{
+	width: 25%;
+}
+.submit-list .time{
+	width: 15%;
+}
+.submit-list .description{
+	width: 25%;
+}
+@media (max-width: 767px) {
+	.submit-list .index{
+		width : 25%;
+	}
+	.submit-list .name{
+		width: 75%;
+	}
+	.submit-list .email{
+		width: 100%;
+	}
+	.submit-list .file{
+		width: 100%;
+	}
+	.submit-list .time{
+		width: 100%;
+	}
+	.submit-list .description{
+		width: 100%;
+	}
+}
+
+input{
+	margin-bottom : 1rem;
+}
+.ass-btn{
+	display: inline;
+	margin-left : 1rem;
+}
+.btn-warning1{
+	color: orange;
+}
+.btn-danger1{
+	color : red;
+}
+.pointer:hover{
+	cursor:pointer;
 }

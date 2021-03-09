@@ -1,5 +1,10 @@
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
 
+$('.datepicker').datepicker({
+    format: 'yyyy/mm/dd',
+    startDate: '-3d'
+});
+
 $(document).on('click', '#btn-student-list', function() {
 	url = document.URL + '/student-list';
 	role = $(this).attr('role')
@@ -125,6 +130,54 @@ $('.accept-request').on('click', function() {
 	})
 })
 
+// Assignment section
+$('a#add-assignment').on('click', function() {
+	// reset value
+	$('#upload-assignment-modal input[name="description"]').val()
+	$('#upload-assignment-modal input[name="title"]').val()
+})
+
+$('a#edit-assignment').on('click', function() {
+	// update value
+	$('#upload-document-modal input[name="description"]').val($(this).attr('des'))
+	$('#upload-document-modal input[name="assignment_submit_id"]').val($(this).attr('assignment-submit-id'))
+	$('#upload-document-modal input[name="assignmentFile"]').prop('required', false)
+})
+
+$('.delete-assignment-submit').on('click', function() {
+	let id = $(this).attr('assignment-submit-id')
+	var obj = $(this)
+	Swal.fire({
+	  title: 'Do you want to delete your submission?',
+	  showCancelButton: true,
+	  confirmButtonText: `Delete`,
+	}).then((result) => {
+	  /* Read more about isConfirmed, isDenied below */
+	  if (result.isConfirmed) {
+		url = document.URL + '/delete-assignment-submit';
+	  	$.ajax({
+			url: url,
+			type: 'GET',
+			data: {
+				id: id
+			},
+		})
+		.done(function(response) {
+			// gửi thành công lên server
+			if(response.status) { //nếu server  xóa thành công
+				// xóa assignment submited trên giao diện
+				let deleteObj = $(obj).parents('.submit-list').parent();
+				deleteObj.remove();
+				//thông báo thành công
+				Swal.fire('Deleted!', '', 'success')
+			} else {
+				Swal.fire('Have error!', '', 'error')
+			}
+		})
+	  }
+	})
+})
+
 // Document section
 $('.edit-document').on('click', function() {
 	$('#upload-document-modal input[name="description"]').val($(this).attr('description'))
@@ -134,7 +187,7 @@ $('.edit-document').on('click', function() {
 	let action = temp + 'edit-document'
 	$('#upload-document-modal form').attr('action', action)
 })
-$('#add-document').on('click', function() {
+$('a#add-document').on('click', function() {
 	// add new document
 	$('#upload-document-modal input[name="description"]').val()
 	let temp = $('#upload-document-modal form').attr('action')
@@ -409,7 +462,7 @@ $(document).on('click', '.edit-comment', function() {
 });
 
 // fix lỗi đường dẫn khi submit trên modal
-var route = window.location.href
-$('#upload-document-modal').on('hidden.bs.modal', function (e) {
-  	window.location.replace(route);
-})
+// var route = window.location.href
+// $('#upload-document-modal').on('hidden.bs.modal', function (e) {
+//   	window.location.replace(route);
+// })

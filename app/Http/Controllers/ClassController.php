@@ -16,6 +16,7 @@ use App\InviteJoin;
 use App\Documents;
 use App\Comment;
 use App\SubComment;
+use App\Assignment;
 
 class ClassController extends Controller
 {
@@ -245,10 +246,13 @@ class ClassController extends Controller
 				'comments' => $comments,
 			]);
 		}
+
+		$assignments = Assignment::select('id', 'title')->where('class_id', $id)->get();
 		return view('class_detail', [
 			'class' => $class,
 			'documents' => $documents,
 			'comments' => $comments,
+			'assignments' => $assignments
 		]);
 	}
 

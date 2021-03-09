@@ -58,5 +58,13 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::post('/{id}/add-sub-comment', 'CommentController@addSubComment');
 		Route::get('/{id}/delete-sub-comment', 'CommentController@deleteSubComment');
 		Route::post('/{id}/edit-sub-comment', 'CommentController@editSubComment');
+
+		Route::post('/{id}/assignment/save', 'AssignmentController@save');
+	});
+
+	Route::prefix('assignment')->group(function(){
+		Route::get('/{id}', 'AssignmentController@get')->name('assignment');
+		Route::post('/{id}/upload', 'AssignmentController@upload');
+		Route::get('/{id}/delete-assignment-submit', 'AssignmentController@deleteSubmit');
 	});
 });

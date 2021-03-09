@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('css')
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" />
 	<link rel="stylesheet" href="{{asset('../css/class_detail.css')}}">
 @endsection
 @section('content')
@@ -40,12 +41,29 @@
 	      	</div>
 	      	<hr>
 	      	<div class="document-title">Assignments <i class="fa fa-briefcase" aria-hidden="true"></i></div>
+	      	<div class="document-list">
+	      		<div class="assignment-row">
+	      		@if(isset($assignments) && count($assignments) > 0)
+	      		@foreach($assignments as $item)
+	      			<a class="assignment-item my-1" href="{{asset('')}}assignment/{{$item->id}}">
+	      				<i class="fa fa-folder-open-o" aria-hidden="true"></i> {{$item->title}}
+	      			</a>
+	      		@endforeach
+	      		@endif
+	      		</div>
+	      		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+	      		<div class="document-item">
+	      			<a data-toggle="modal" href='#upload-assignment-modal' class="btn btn-success" id="add-assignment"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Assignment</a>
+	      		</div>
+	      		@endif
+	      	</div>
+	      	
 	      	<hr>
 	      	<div class="document-title">Documents <i class="fa fa-file-text" aria-hidden="true"></i></div>
 	      	<div class="document-list">
 	      		@if(isset($documents) && count($documents) > 0)
 	      		@foreach($documents as $item)
-	      		<div class="document-item">
+	      		<div class="document-item py-1">
 	      			<h5>description : {{$item->description}}</h5>
 	      			<i class="fa fa-book" aria-hidden="true"></i><a href="{{asset('')}}download/{{$item->source}}" > {{$item->source}}</a>
 	      			@if(Auth::user()->role == 1 || Auth::user()->role == 2)
@@ -62,9 +80,9 @@
 	      		</div>
 	      		@endforeach
 	      		@endif
-	      		@if(Auth::user()->id == 1 || Auth::user()->role == 2)
+	      		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
 	      		<div class="document-item">
-	      			<a data-toggle="modal" href='#upload-document-modal' class="btn btn-success" id="add-document">Add Document</a>
+	      			<a data-toggle="modal" href='#upload-document-modal' class="btn btn-success" id="add-document"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Document</a>
 	      		</div>
 	      		@endif
 	      	</div>
@@ -325,13 +343,45 @@
 	      <div class="modal-footer">
 	        <button type="submit" class="btn btn-primary btn-save" id="">{{__('dict.action.save')}}</button>
 	      </div>
+	      </form>
 	    </div>
-	    </form>
+	  </div>
+	</div>
+
+	{{-- modal upload bài tập --}}
+	<div class="modal fade" id="upload-assignment-modal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Assignment</h4>
+	      </div>
+	      <form method="POST" action="{{asset('')}}my-class/{{$class->id}}/assignment/save" enctype="multipart/form-data">
+	      	{{-- add new document : action + upload --}}
+	      	{{-- edit document : action + edit-document --}}
+	      <div class="modal-body">
+	        @csrf
+	        	<input type="hidden" name="assignment_id" value="">
+	        	<label>Title</label>
+	        	<input type="text" class="form-control" id="" name="title" required="required">
+	        	<label>Expired Date</label>
+	        	<input type="text" class="form-control datepicker" id="" name="expired" required="required" readonly="readonly">
+	        	<label>Description</label>
+	        	<input type="text" class="form-control" id="" name="description" required="required">
+	        	{{-- <label>Document File</label>
+	        	<input type="file" class="form-control-file" id="" name="assignmentFile" required> --}}
+	      </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-primary btn-save" id="">{{__('dict.action.save')}}</button>
+	      </div>
+	      </form>
+	    </div>
 	  </div>
 	</div>
 @endsection
 
 @section('foot')
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 	<script src="{{asset('')}}js/class_detail.js"></script>
 @endsection
