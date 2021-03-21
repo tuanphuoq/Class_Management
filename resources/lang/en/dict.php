@@ -37,6 +37,9 @@ return [
         'invite_fail' => 'Failed to join, please try again',
         'accept_success' => 'The student has joined the class',
         'accept_invite_success' => 'Joined the class',
+        'change_success' => 'Change status of the classroom successfully',
+        'change_fail' => "Change status of classroom fail, Check again" ,
+        'change_status_class' => 'Change status of the classroom'
     ],
     'state' => [
         '0' => "Waiting",

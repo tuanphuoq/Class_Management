@@ -29,11 +29,12 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::post('role', 'UserController@role');
 	});
 	Route::prefix('class')->group(function(){
-		Route::get('/', 'ClassController@list');
+		Route::get('/', 'ClassController@list')->name('class.list');
 		Route::get('/create', 'ClassController@create');
 		Route::get('search', 'ClassController@search')->name('class.search');
 		Route::post('/save', 'ClassController@save')->name('save');
 		Route::post('delete', 'ClassController@delete')->name('class.delete');
+		Route::post('change', 'ClassController@change')->name('class.change');
 	});
 	Route::prefix('my-request')->group(function(){
 		Route::get('/', 'ClassController@getRequest');

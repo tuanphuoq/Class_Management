@@ -29,7 +29,11 @@ class ClassController extends Controller
     public function list()
     {
     	$classrooms = Classroom::all();
-    	return view('class', ['classrooms' => $classrooms]);
+    	$teachers = User::whereIn('role', [1,2])->get();
+    	return view('class', [
+    		'classrooms' => $classrooms,
+    		'teachers' => $teachers
+    	]);
     }
 
     public function create()
@@ -39,35 +43,40 @@ class ClassController extends Controller
 
     public function save(Request $req)
     {
-    	//nếu tồn tại class_id tức là sửa class
-    	if(isset($req->classID)) { //check tồn tại classID từ phía client
-    		$class = Classroom::find($req->classID);
-    		if(isset($class)) {
-    			//gán các giá trị mới
-    			$class->class_name = $req->className;
-	    		$class->room = $req->classRoom;
-	    		$class->subject = $req->subject;
-	    		$class->description = $req->description;    		
-	    		// trong trường hợp edit mà muốn sửa lại file hình ảnh thì mới thực hiện thay đổi ảnh
-	    		if(isset($req->classFile)) {
-	    			$class->class_image = $this->saveImg($req);
+    	if (isset($req->teacherID) && $req->teacherID != 0) {
+    		//nếu tồn tại class_id tức là sửa class
+	    	if(isset($req->classID)) { //check tồn tại classID từ phía client
+	    		$class = Classroom::find($req->classID);
+	    		if(isset($class)) {
+	    			//gán các giá trị mới
+	    			$class->class_name = $req->className;
+		    		$class->room = $req->classRoom;
+		    		$class->subject = $req->subject;
+		    		$class->creator_id = $req->teacherID;
+		    		$class->description = $req->description;    		
+		    		// trong trường hợp edit mà muốn sửa lại file hình ảnh thì mới thực hiện thay đổi ảnh
+		    		if(isset($req->classFile)) {
+		    			$class->class_image = $this->saveImg($req);
+		    		}
+		    		// lưu dữ liệu mới
+		    		$class->save();
+		    		return $this->list();
+	    		} else {
+	    			return $this->list();
 	    		}
-	    		// lưu dữ liệu mới
-	    		$class->save();
+	    	} else {
+	    		//nếu không tồn tại class_id tức là tạo mới class
+	    		$class['class_code'] = $this->getCode(); //tạo code class
+	    		// Auth::user()->id để xác định người tạo lớp
+	    		$class['creator_id'] = $req->teacherID;
+	    		$class['class_name'] = $req->className;
+	    		$class['room'] = $req->classRoom;
+	    		$class['subject'] = $req->subject;
+	    		$class['class_image'] = $this->saveImg($req);
+	    		$result = Classroom::create($class);
 	    		return $this->list();
-    		} else {
-    			return $this->list();
-    		}
+	    	}
     	} else {
-    		//nếu không tồn tại class_id tức là tạo mới class
-    		$class['class_code'] = $this->getCode(); //tạo code class
-    		// Auth::user()->id để xác định người tạo lớp
-    		$class['creator_id'] = Auth::user()->id;
-    		$class['class_name'] = $req->className;
-    		$class['room'] = $req->classRoom;
-    		$class['subject'] = $req->subject;
-    		$class['class_image'] = $this->saveImg($req);
-    		$result = Classroom::create($class);
     		return $this->list();
     	}
     }
@@ -117,6 +126,26 @@ class ClassController extends Controller
 			return response()->json([
 				'status' => false,
 				'message' => __('dict.class.delete_fail')
+			]);
+		}
+	}
+
+	public function change(Request $req)
+	{
+		$class = Classroom::find($req->classID);
+		if(Auth::user()->role == 2 || Auth::user()->role == 1) {
+			// admin or teacher
+			$class->status = $req->status;
+			$class->save();
+			return response()->json([
+				'status' => true,
+				'message' => __('dict.class.change_success')
+			]);
+		} else {
+			// đây không phải là người tạo lớp
+			return response()->json([
+				'status' => false,
+				'message' => __('dict.class.change_fail')
 			]);
 		}
 	}
@@ -193,67 +222,98 @@ class ClassController extends Controller
 
 	public function classByID($id)
 	{
-		$class = Classroom::find($id);
-		$class->teacher_name = User::where('id', $class->creator_id)->value('name');
-		$sum = RequestJoin::where('class_id', $id)->where('state', 0)->count();
-		$documents = Documents::where('class_id', $id)->orderBy('updated_at', 'DESC')->get();
-		$comments = Comment::select(
-				'users.id as user_id',
-				'users.name',
-				'users.role',
-				'comments.id',
-				'comments.commentor',
-				'comments.content',
-				'comments.created_at',
-				'comments.updated_at',
-			)
-			->join('users', 'users.id', '=', 'comments.commentor')
-			->where('comments.class_id', $id)
-			->orderBy('comments.created_at', 'ASC')
-			->get();
+		if (Auth::user()->role == 1 || $this->isInClassroom($id)) {
+			$class = Classroom::find($id);
+			if ($class) {
+				$class->teacher_name = User::where('id', $class->creator_id)->value('name');
+				$sum = RequestJoin::where('class_id', $id)->where('state', 0)->count();
+				$documents = Documents::where('class_id', $id)->orderBy('updated_at', 'DESC')->get();
+				$comments = Comment::select(
+						'users.id as user_id',
+						'users.name',
+						'users.role',
+						'comments.id',
+						'comments.commentor',
+						'comments.content',
+						'comments.created_at',
+						'comments.updated_at',
+					)
+					->join('users', 'users.id', '=', 'comments.commentor')
+					->where('comments.class_id', $id)
+					->orderBy('comments.created_at', 'ASC')
+					->get();
 
-		foreach ($comments as $item) {
-			$subComment = SubComment::select(
-				'users.id as user_id',
-				'users.name',
-				'users.role',
-				'sub_comments.id',
-				'sub_comments.parent_comment_id',
-				'sub_comments.commentor',
-				'sub_comments.content',
-				'sub_comments.created_at',
-				'sub_comments.updated_at',
-			)
-			->join('users', 'users.id', '=', 'sub_comments.commentor')
-			->where('parent_comment_id', $item->id)
-			->orderBy('sub_comments.created_at', 'ASC')
-			->get();
-			if (count($subComment) > 0) {
-				// $item->subComment = array();
-				$item->subComment = $subComment;
-			}	
+				foreach ($comments as $item) {
+					$subComment = SubComment::select(
+						'users.id as user_id',
+						'users.name',
+						'users.role',
+						'sub_comments.id',
+						'sub_comments.parent_comment_id',
+						'sub_comments.commentor',
+						'sub_comments.content',
+						'sub_comments.created_at',
+						'sub_comments.updated_at',
+					)
+					->join('users', 'users.id', '=', 'sub_comments.commentor')
+					->where('parent_comment_id', $item->id)
+					->orderBy('sub_comments.created_at', 'ASC')
+					->get();
+					if (count($subComment) > 0) {
+						// $item->subComment = array();
+						$item->subComment = $subComment;
+					}	
+				}
+
+				$assignments = Assignment::select('id', 'title')->where('class_id', $id)->get();
+				if($sum > 0) {
+					$data = RequestJoin::select('request_joins.student_id', 'request_joins.id', 'users.name')
+						->join('users', 'users.id', '=', 'request_joins.student_id')
+						->where('class_id', $id)->where('state', 0)->get();
+					return view('class_detail', [
+						'class' => $class,
+						'sum' => $sum,
+						'data' => $data,
+						'documents' => $documents,
+						'comments' => $comments,
+						'assignments' => $assignments
+					]);
+				}
+				return view('class_detail', [
+					'class' => $class,
+					'documents' => $documents,
+					'comments' => $comments,
+					'assignments' => $assignments
+				]);
+			} else {
+				if (Auth::user()->role == 1) {
+					return redirect()->route('class.list');
+				} else {
+					return redirect()->route('class.myClass');
+				}
+			}
+		} else {
+			if (Auth::user()->role == 1) {
+				return redirect()->route('class.list');
+			} else {
+				return redirect()->route('class.myClass');
+			}
 		}
+	}
 
-		if($sum > 0) {
-			$data = RequestJoin::select('request_joins.student_id', 'request_joins.id', 'users.name')
-				->join('users', 'users.id', '=', 'request_joins.student_id')
-				->where('class_id', $id)->where('state', 0)->get();
-			return view('class_detail', [
-				'class' => $class,
-				'sum' => $sum,
-				'data' => $data,
-				'documents' => $documents,
-				'comments' => $comments,
-			]);
+	public function isInClassroom($classID)
+	{
+		$userID = Auth::user()->id;
+		if (Auth::user()->role == 2) {
+			$isTeacher = AttendClass::where('teacher_id', $userID)->where('class_id', $classID)->get();
+			return count($isTeacher) > 0 ?  true : false;
 		}
-
-		$assignments = Assignment::select('id', 'title')->where('class_id', $id)->get();
-		return view('class_detail', [
-			'class' => $class,
-			'documents' => $documents,
-			'comments' => $comments,
-			'assignments' => $assignments
-		]);
+		if (Auth::user()->role == 3) {
+			$isStudent = AttendClass::where('student_id', $userID)->where('class_id', $classID)->get();
+			return count($isStudent) > 0 ?  true : false;
+		}
+		
+		
 	}
 
 	public function addSubComment($comments)

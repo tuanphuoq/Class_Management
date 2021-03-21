@@ -1,12 +1,13 @@
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
 
-// khi click vào button edit class
+// khi click vào button add class
 $('#btn-add-class').on('click', function() {
 	// reset modal data
 	$('#class-modal input[name="classID"]').val("")
 	$('#class-modal input[name="className"]').val("")
 	$('#class-modal input[name="classRoom"]').val("")
 	$('#class-modal input[name="subject"]').val("")
+	$("#class-modal #teacher-list").val(0);
 	// $('#class-modal input[name="classFile"]').attr('required', false)
 })
 
@@ -17,45 +18,72 @@ $('.btn-edit-class').on('click', function() {
 	let className = $(this).attr('class-name')
 	let subject = $(this).attr('subject')
 	let room = $(this).attr('room')
+	let teacherID = $(this).attr('teacher-id')
 	// gán data của class vào modal chỉnh sửa class
 	$('#class-modal input[name="classID"]').val(classID)
 	$('#class-modal input[name="className"]').val(className)
 	$('#class-modal input[name="classRoom"]').val(room)
 	$('#class-modal input[name="subject"]').val(subject)
 	$('#class-modal input[name="classFile"]').attr('required', false)
+	$("#class-modal #teacher-list").val(teacherID);
+	$('#class-modal .assign-teacher-err').remove()
+})
+
+//check data before submit
+$(document).on('click', '#class-modal .btn-save', function(event) {
+	if ($('#teacher-list :selected').val() == 0) {
+		event.preventDefault();
+		let err = "<div class='text-danger assign-teacher-err'>Assign teacher is not null</div>"
+		$('#teacher-list').before(err)
+	} else {
+		$('#class-modal .assign-teacher-err').remove()
+	}
 })
 
 // khi click vào button delete
-// $('.btn-delete-class').on('click', function() {
+$('.btn-delete-class').on('click', function() {
 // 	//lấy id người tạo class để check người tạo trên server
-// 	let classID = $(this).attr('class-id')
-// 	let creatorID = $(this).attr('creator-id')
-// 	// dùng ajax để xóa class
-// 	$.ajax({
-// 		url: '/class/delete',
-// 		type: 'POST',
-// 		data: {
-// 			classID: classID,
-// 			creatorID : creatorID
-// 		},
-// 	})
-// 	.done(function(response) {
-// 		// gửi thành công lên server
-// 		if(response.status) { //nếu server trả về kết quả thành công
-// 			$('#modal-id').modal('toggle');
-// 			//thông báo thành công
-// 			toastr.success(response.message);
-// 			window.location.href = "/class";
-// 		} else { //nếu server trả về kết quả thất bại
-// 			//thông báo thất bại
-// 			toastr.error(response.message);
-// 		}
-// 	})
-// 	.fail(function() {
-// 		//thông báo thất bại
-// 		toastr.error(response.message);
-// 	})
-// })
+	let classID = $(this).attr('class-id')
+	let creatorID = $(this).attr('creator-id')
+	let className = $(this).attr('class-name')
+	//set data on modal
+	$('#change-status input[name="classID"]').val(classID)
+	$('#change-status input[name="creatorID"]').val(creatorID)
+	$('#change-status input[name="className"]').val(className)
+})
+
+//change status
+$(document).on('click', 'div#change-status .btn-save', function() {
+	let classID = $('#change-status input[name="classID"]').val()
+	let creatorID = $('#change-status input[name="creatorID"]').val()
+	let status = $('#status-list :selected').val();
+	// dùng ajax để change status class
+	$.ajax({
+		url: '/class/change',
+		type: 'POST',
+		data: {
+			classID: classID,
+			creatorID : creatorID,
+			status : status
+		},
+	})
+	.done(function(response) {
+		// gửi thành công lên server
+		if(response.status) { //nếu server trả về kết quả thành công
+			$('#change-status').modal('toggle');
+			//thông báo thành công
+			toastr.success(response.message);
+			// window.location.href = "/class";
+		} else { //nếu server trả về kết quả thất bại
+			//thông báo thất bại
+			toastr.error(response.message);
+		}
+	})
+	.fail(function() {
+		//thông báo thất bại
+		toastr.error(response.message);
+	})
+})
 
 $('#btn-join').on('click', function() {
 	$('#input-class-code').removeClass('hidden')

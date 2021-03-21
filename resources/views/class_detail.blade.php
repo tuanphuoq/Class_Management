@@ -25,6 +25,10 @@
 	      		<a data-toggle="modal" href='#add-student-modal' class="btn btn-box-header btn-success">
 	      			Add Student  &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
 	      		</a>
+	      		<a data-toggle="modal" href='#change-status' class="btn btn-box-header btn-success btn-delete-class" class-id="{{$class->id}}" 
+	      			creator-id="{{Auth::user()->id}}" class-name="{{$class->class_name}}">
+	      			Change Status  &nbsp;<i class="fa fa-refresh" aria-hidden="true"></i>
+	      		</a>
 	      		@endif
 	      		<a data-toggle="modal" href='#class-modal' class="btn btn-box-header btn-success" id="btn-student-list" role="{{Auth::user()->role}}">
 	      			Student List  &nbsp;<i class="fa fa-users" aria-hidden="true"></i>
@@ -376,6 +380,36 @@
 	      </div>
 	      </form>
 	    </div>
+	  </div>
+	</div>
+
+	{{-- modal tạo mới, sửa class --}}
+	<div class="modal fade" id="change-status">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">{{__('dict.class.change_status_class')}}</h4>
+	      </div>
+	      <form>
+	      <div class="modal-body">
+	        @csrf
+	        	<input type="hidden" class="form-control" value="" name="classID" required="required">
+	        	<input type="hidden" class="form-control" value="" name="creatorID" required="required">
+	        	<label>Class Name</label>
+	        	<input type="text" class="form-control" id="" name="className" required="required" readonly="readonly">
+	        	<label>Status</label>
+	        	<select class="form-control" id="status-list">
+	        		<option value="1">Classroom is open</option>
+	        		<option value="2">Classroom finished</option>
+	        		<option value="0">Soft delete this classroom</option>
+	        	</select>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-primary btn-save">{{__('dict.action.save')}}</button>
+	      </div>
+	    </div>
+	    </form>
 	  </div>
 	</div>
 @endsection

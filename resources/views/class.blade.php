@@ -94,7 +94,7 @@
 	             		<i class="fa fa-eye" aria-hidden="true"></i>
 	             	</a>
 	             	<br>
-	             	<a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
+	             	<a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class" teacher-id="{{$class->creator_id}}"
 	            		class-id="{{$class->id}}" class-name="{{$class->class_name}}" subject="{{$class->subject}}" room="{{$class->room}}">
 	            		<i class="fa fa-pencil-square-o" aria-hidden="true"></i>	
 	            	</a>
@@ -103,7 +103,8 @@
 	             		<i class="fa fa-trash-o" aria-hidden="true"></i>
 	             	</button> --}}
 	             	<br>
-	             	<button class="btn btn-danger btn-delete-class" class-id="{{$class->id}}" creator-id="{{Auth::user()->id}}">
+	             	<button class="btn btn-danger btn-delete-class" class-id="{{$class->id}}" creator-id="{{Auth::user()->id}}"
+	             		class-name="{{$class->class_name}}" data-toggle="modal" href='#change-status'>
 	             		<i class="fa fa-refresh" aria-hidden="true"></i>
 	             	</button>
 	      		</div>
@@ -135,6 +136,15 @@
 	        	<input type="text" class="form-control" id="" name="classRoom" required="required">
 	        	<label>Subject</label>
 	        	<input type="text" class="form-control" id="" name="subject" required="required">
+	        	<label>Assigned Teacher</label>
+	        	<select class="form-control" id="teacher-list" name="teacherID" required="required">
+	        		@if (isset($teachers))
+	        			<option value="0">Select the teacher</option>
+	        			@foreach ($teachers as $teacher)
+	        			<option value="{{$teacher->id}}">{{$teacher->name}}</option>
+	        			@endforeach
+	        		@endif
+	        	</select>
 	        	<label>Description</label>
 	        	<textarea class="form-control" name="description" rows="8"></textarea>
 	        	<label>Class Image</label>
@@ -142,6 +152,36 @@
 	      </div>
 	      <div class="modal-footer">
 	        <button type="submit" class="btn btn-primary btn-save" id="">{{__('dict.action.save')}}</button>
+	      </div>
+	    </div>
+	    </form>
+	  </div>
+	</div>
+
+	{{-- modal change status of class --}}
+	<div class="modal fade" id="change-status">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">{{__('dict.class.change_status_class')}}</h4>
+	      </div>
+	      <form>
+	      <div class="modal-body">
+	        @csrf
+	        	<input type="hidden" class="form-control" value="" name="classID" required="required">
+	        	<input type="hidden" class="form-control" value="" name="creatorID" required="required">
+	        	<label>Class Name</label>
+	        	<input type="text" class="form-control" id="" name="className" required="required" readonly="readonly">
+	        	<label>Status</label>
+	        	<select class="form-control" id="status-list">
+	        		<option value="1">Classroom is open</option>
+	        		<option value="2">Classroom finished</option>
+	        		<option value="0">Soft delete this classroom</option>
+	        	</select>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-primary btn-save">{{__('dict.action.save')}}</button>
 	      </div>
 	    </div>
 	    </form>

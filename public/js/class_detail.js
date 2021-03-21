@@ -130,6 +130,52 @@ $('.accept-request').on('click', function() {
 	})
 })
 
+// change status of classroom
+// khi click vào button delete
+$('.btn-delete-class').on('click', function() {
+// 	//lấy id người tạo class để check người tạo trên server
+	let classID = $(this).attr('class-id')
+	let creatorID = $(this).attr('creator-id')
+	let className = $(this).attr('class-name')
+	//set data on modal
+	$('#change-status input[name="classID"]').val(classID)
+	$('#change-status input[name="creatorID"]').val(creatorID)
+	$('#change-status input[name="className"]').val(className)
+})
+
+//change status
+$(document).on('click', 'div#change-status .btn-save', function() {
+	let classID = $('#change-status input[name="classID"]').val()
+	let creatorID = $('#change-status input[name="creatorID"]').val()
+	let status = $('#status-list :selected').val();
+	// dùng ajax để change status class
+	$.ajax({
+		url: '/class/change',
+		type: 'POST',
+		data: {
+			classID: classID,
+			creatorID : creatorID,
+			status : status
+		},
+	})
+	.done(function(response) {
+		// gửi thành công lên server
+		if(response.status) { //nếu server trả về kết quả thành công
+			$('#change-status').modal('toggle');
+			//thông báo thành công
+			toastr.success(response.message);
+			// window.location.href = "/class";
+		} else { //nếu server trả về kết quả thất bại
+			//thông báo thất bại
+			toastr.error(response.message);
+		}
+	})
+	.fail(function() {
+		//thông báo thất bại
+		toastr.error(response.message);
+	})
+})
+
 // Assignment section
 $('a#add-assignment').on('click', function() {
 	// reset value
