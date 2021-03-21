@@ -82,14 +82,26 @@
 	      		<h6 class="body-subject">Subject : {{$class->subject}}</h6>
 	      		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
 	      		<div class="class-action">
-	      			<a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
+	      			{{-- <a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
 	            		class-id="{{$class->id}}" class-name="{{$class->class_name}}" subject="{{$class->subject}}" room="{{$class->room}}">Edit</a>
-	             	<button class="btn btn-danger btn-delete-class" class-id="{{$class->id}}" creator-id="{{Auth::user()->id}}">Delete</button>
+	             	<button class="btn btn-danger btn-delete-class" class-id="{{$class->id}}" creator-id="{{Auth::user()->id}}">Delete</button> --}}
+	             	<a href="{{asset('')}}my-class/{{$class->id}}" class="btn btn-info btn-view">
+	             		<i class="fa fa-eye" aria-hidden="true"></i>
+	             	</a>
+	             	{{-- <br>
+	             	<a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
+	            		class-id="{{$class->id}}" class-name="{{$class->class_name}}" subject="{{$class->subject}}" room="{{$class->room}}">
+		            	<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+		            </a>
+		            <br>
+	             	<button class="btn btn-danger btn-delete-class" class-id="{{$class->id}}" creator-id="{{Auth::user()->id}}">
+	             		<i class="fa fa-trash-o" aria-hidden="true"></i>
+	             	</button> --}}
 	      		</div>
 	      		@endif
-	      		<div class="view-class">
+	      		{{-- <div class="view-class">
 	      			<a href="{{asset('')}}my-class/{{$class->id}}" class="btn btn-info">View <i class="fa fa-eye" aria-hidden="true"></i></a>
-	      		</div>
+	      		</div> --}}
 	      	</div>
 	      	@endforeach
 	           @endif

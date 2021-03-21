@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ __('dict.app_name') }}</title>
+  <link rel="icon" href="{{asset('../imgs/edufavicon.png')}}" type="image/x-icon" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{{asset('../css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{asset('../css/AdminLTE.min.css')}}">
@@ -92,7 +93,9 @@
               @if(Auth::user()->role == 1 || Auth::user()->role == 2)
               <li><a href="{{asset('')}}class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.class_manager')}}</a></li>
               @endif
+              @if(Auth::user()->role != 1)
               <li><a href="{{asset('')}}my-class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.my_class')}}</a></li>
+              @endif
               <li><a href="{{asset('')}}my-request"><i class="fa fa-paper-plane" aria-hidden="true"></i> {{__('dict.class.my_request')}}</a></li>
             </ul>
           </li>

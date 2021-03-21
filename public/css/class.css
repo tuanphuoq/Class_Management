@@ -20,7 +20,7 @@
 	border : 1px solid red;
 }
 .class-item{
-	padding : 10px;
+	padding : 10px 0px;
 	border-radius : 10px;
 	height : 150px;
 	margin : 10px;
@@ -59,7 +59,7 @@
 	position: absolute;
 	bottom : 0;
 	right : 1%;
-	display : none;
+	/*display : none;*/
 	z-index : 100;
 }
 .class-item:hover{
@@ -98,4 +98,19 @@
 }
 .invitations{
 	margin-top : 10px !important;
+}
+/*fix button*/
+.btn-edit-class{
+	border-radius: 65%;
+    padding: 3px 7px;
+    margin-bottom : 0.5rem;
+}
+.btn-delete-class{
+	border-radius: 65%;
+    padding: 3px 8px;
+}
+.btn-view{
+	border-radius: 65%;
+    padding: 3px 7px;
+    margin-bottom : 0.5rem;
 }

@@ -1,6 +1,16 @@
 $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
 
 // khi click vào button edit class
+$('#btn-add-class').on('click', function() {
+	// reset modal data
+	$('#class-modal input[name="classID"]').val("")
+	$('#class-modal input[name="className"]').val("")
+	$('#class-modal input[name="classRoom"]').val("")
+	$('#class-modal input[name="subject"]').val("")
+	// $('#class-modal input[name="classFile"]').attr('required', false)
+})
+
+// khi click vào button edit class
 $('.btn-edit-class').on('click', function() {
 	// lấy các thuộc tính của lớp được gán trong thuộc tính của button edit
 	let classID = $(this).attr('class-id')
@@ -16,36 +26,36 @@ $('.btn-edit-class').on('click', function() {
 })
 
 // khi click vào button delete
-$('.btn-delete-class').on('click', function() {
-	//lấy id người tạo class để check người tạo trên server
-	let classID = $(this).attr('class-id')
-	let creatorID = $(this).attr('creator-id')
-	// dùng ajax để xóa class
-	$.ajax({
-		url: '/class/delete',
-		type: 'POST',
-		data: {
-			classID: classID,
-			creatorID : creatorID
-		},
-	})
-	.done(function(response) {
-		// gửi thành công lên server
-		if(response.status) { //nếu server trả về kết quả thành công
-			$('#modal-id').modal('toggle');
-			//thông báo thành công
-			toastr.success(response.message);
-			window.location.href = "/class";
-		} else { //nếu server trả về kết quả thất bại
-			//thông báo thất bại
-			toastr.error(response.message);
-		}
-	})
-	.fail(function() {
-		//thông báo thất bại
-		toastr.error(response.message);
-	})
-})
+// $('.btn-delete-class').on('click', function() {
+// 	//lấy id người tạo class để check người tạo trên server
+// 	let classID = $(this).attr('class-id')
+// 	let creatorID = $(this).attr('creator-id')
+// 	// dùng ajax để xóa class
+// 	$.ajax({
+// 		url: '/class/delete',
+// 		type: 'POST',
+// 		data: {
+// 			classID: classID,
+// 			creatorID : creatorID
+// 		},
+// 	})
+// 	.done(function(response) {
+// 		// gửi thành công lên server
+// 		if(response.status) { //nếu server trả về kết quả thành công
+// 			$('#modal-id').modal('toggle');
+// 			//thông báo thành công
+// 			toastr.success(response.message);
+// 			window.location.href = "/class";
+// 		} else { //nếu server trả về kết quả thất bại
+// 			//thông báo thất bại
+// 			toastr.error(response.message);
+// 		}
+// 	})
+// 	.fail(function() {
+// 		//thông báo thất bại
+// 		toastr.error(response.message);
+// 	})
+// })
 
 $('#btn-join').on('click', function() {
 	$('#input-class-code').removeClass('hidden')
