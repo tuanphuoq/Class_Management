@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\User;
+use App\MailSystem;
 
 class UserController extends Controller
 {
@@ -24,6 +25,11 @@ class UserController extends Controller
     		//chỉnh sửa role của user = $req->role
     		$user->role = $req->role;
     		if($user->save()) { //nếu update role thành công
+                //send mail
+                $data['toName'] = $user->name;
+                $data['toEmail'] = $user->email;
+                $data['roleName'] = $this->getRoleName($req->role);
+                MailSystem::sendMail($user->id, "changerole", $data);
     			//trả về thông báo thành công cho ajax
     			return response()->json([
     				'status' => true,
@@ -42,5 +48,18 @@ class UserController extends Controller
 				'message' => __('dict.role.role_fail')
 			]);
 		}
+    }
+
+    public function getRoleName($roleID)
+    {
+        if ($roleID == 1) {
+            return "ADMIN";
+        }
+        if ($roleID == 2) {
+            return "Teacher";
+        }
+        if ($roleID == 3) {
+            return "Student";
+        }
     }
 }
