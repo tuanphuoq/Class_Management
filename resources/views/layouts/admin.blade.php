@@ -5,8 +5,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ __('dict.app_name') }}</title>
-  <link rel="icon" href="{{asset('../imgs/edufavicon.png')}}" type="image/x-icon" />
+  {{-- <link rel="icon" href="{{asset('../imgs/edufavicon.png')}}" type="image/x-icon" />
+  <link rel="shortcut icon" href="{{{ asset('../imgs/edufavicon.png') }}}"> --}}
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="icon" href="{{ URL::asset('/imgs/edufavicon.png') }}" type="image/x-icon"/>
   <link rel="stylesheet" href="{{asset('../css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{asset('../css/AdminLTE.min.css')}}">
   <link rel="stylesheet" href="{{asset('../css/_all-skins.min.css')}}">
@@ -47,7 +49,8 @@
                 </li>
                 <li class="user-footer">
                   <div class="pull-left">
-                    <a class="btn btn-default btn-flat">Profile</a>
+                    <a class="btn btn-default btn-flat" href="{{route('changepassword')}}">Đổi mật khẩu</a>
+                    {{-- <a class="btn btn-default btn-flat">Profile</a> --}}
                   </div>
                   <div class="pull-right">
                     <a href="{{route('logout')}}" class="btn btn-default btn-flat" onclick="event.preventDefault();
@@ -96,8 +99,20 @@
               @if(Auth::user()->role != 1)
               <li><a href="{{asset('')}}my-class"><i class="fa fa-braille" aria-hidden="true"></i> {{__('dict.class.my_class')}}</a></li>
               @endif
-              <li><a href="{{asset('')}}my-request"><i class="fa fa-paper-plane" aria-hidden="true"></i> {{__('dict.class.my_request')}}</a></li>
+              {{-- <li><a href="{{asset('')}}my-request"><i class="fa fa-paper-plane" aria-hidden="true"></i> {{__('dict.class.my_request')}}</a></li> --}}
             </ul>
+          </li>
+          <li class="">
+            @if (Auth::user()->role == 1)
+            <a href="{{asset('')}}my-request">
+              <i class="fa fa-paper-plane" aria-hidden="true"></i> <span>All Request</span>
+            </a>
+            @else
+            <a href="{{asset('')}}my-request">
+              <i class="fa fa-paper-plane" aria-hidden="true"></i> <span>{{__('dict.class.my_request')}}</span>
+            </a>
+
+            @endif
           </li>
           {{-- <li class="treeview">
             <a>

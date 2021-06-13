@@ -5,16 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\User;
+use Auth;
 use App\MailSystem;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function list()
     {
-    	//lấy danh sách user từ database
-    	$list = User::all();
-    	//trả danh sách user về view user.blade.php để hiển thị
-    	return view('user', ['users' => $list]);
+    	if (Auth::user()->role == 1) {
+			//lấy danh sách user từ database
+			$list = User::all();
+			//trả danh sách user về view user.blade.php để hiển thị
+			return view('user', ['users' => $list]);
+		} else {
+			return redirect()->route('class.list');
+		}
     }
 
     public function role(Request $req)
@@ -62,4 +68,36 @@ class UserController extends Controller
             return "Student";
         }
     }
+
+	public function changePassword()
+	{
+		return view('password');
+	}
+
+	public function savePassword(Request $req)
+	{
+		if ($req->oldPass == "") {
+            $message = "Mật khẩu cũ không được để trống";
+			return redirect()->route('changepassword')->with('error', $message);
+        } else if ($req->newPass == "" || $req->rePass == "") {
+            $message = "Mật khẩu mới và mật khẩu xác nhận không được để trống";
+			return redirect()->route('changepassword')->with('error', $message);
+        } else if ($req->newPass != $req->rePass) {
+            $message = "Xác nhận mật khẩu không đúng";
+			return redirect()->route('changepassword')->with('error', $message);
+        } else {
+            // if (Auth::user()->password == Hash::make($req->oldPass)) {
+            if (Hash::check($req->oldPass, Auth::user()->password)) {
+				$user = User::find(Auth::user()->id);
+				$user->password = Hash::make($req->newPass);
+				$user->save();
+				$message = "Cập nhật mật khẩu thành công";
+				// success
+				return redirect()->route('changepassword')->with('success', $message);
+			} else {
+				$message = "Sai mật khẩu để cập nhật mật khẩu mới";
+				return redirect()->route('changepassword')->with('error', $message);
+			}
+        }
+	}
 }

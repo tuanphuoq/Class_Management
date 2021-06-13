@@ -14,10 +14,20 @@
 			        <h3 class="box-title">Class code : {{$class->class_code}}</h3>
 			        <h3 class="box-title">Subject : {{$class->subject}}</h3>
 			        <h3 class="box-title">Room : {{$class->room}}</h3>
+					<?php $class_status = [
+						0 => 'Deleted',
+						1 => 'Is Active',
+						2 => 'Finished',
+					]; ?>
+					<h3 class="box-title">Status :
+						<span class="{{$class->status == 1 ? 'text-success' : 'text-danger'}}">
+							<i class="fa fa-circle" aria-hidden="true"></i> {{$class_status[$class->status]}}
+						</span>
+					</h3>
 			      </div>
 	      	</div>
 	      	<div class="col-lg-6 group-btn text-right">
-	      		@if(Auth::user()->role == 2 || Auth::user()->role == 1)
+	      		@if((Auth::user()->role == 2 || Auth::user()->role == 1) && $class->status == 1)
 	      		{{-- <button class="btn btn-box-header">tét</button> --}}
 	      		<a data-toggle="modal" href='#request-modal' class="btn btn-box-header btn-success" id="btn-student-list">
 	      			Request Join <span class="badge badge-secondary">{{isset($sum) ? $sum : 0}}</span>
@@ -55,7 +65,7 @@
 	      		@endforeach
 	      		@endif
 	      		</div>
-	      		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+	      		@if((Auth::user()->role == 1 || Auth::user()->role == 2) && $class->status == 1)
 	      		<div class="document-item">
 	      			<a data-toggle="modal" href='#upload-assignment-modal' class="btn btn-success" id="add-assignment"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Assignment</a>
 	      		</div>
@@ -127,13 +137,15 @@
 				                <textarea type="text" name="" class="edit-commented" readonly="readonly" comment-id="{{$item->id}}">{{$item->content}}</textarea>
 				                <div class="action">
 				                    <span>At {{$item->updated_at}}</span>
-				                    <span class="text-info reply-comment px-1" comment-id="{{$item->id}}">Reply</span>
-				                    @if(Auth::user()->id == $item->commentor)
-				                    <span class="text-warning edit-comment px-1" comment-id="{{$item->id}}">Edit</span>
-				                    @endif
-				                    @if(Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->id == $item->commentor)
-				                    <span class="text-danger delete-comment px-1" comment-id="{{$item->id}}">Delete</span>
-				                    @endif
+									@if ($class->status == 1)
+										<span class="text-info reply-comment px-1" comment-id="{{$item->id}}">Reply</span>
+										@if(Auth::user()->id == $item->commentor)
+										<span class="text-warning edit-comment px-1" comment-id="{{$item->id}}">Edit</span>
+										@endif
+										@if(Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->id == $item->commentor)
+										<span class="text-danger delete-comment px-1" comment-id="{{$item->id}}">Delete</span>
+										@endif
+									@endif
 				                </div>
 				            </div>
 				        </div>
@@ -157,13 +169,15 @@
 						                <textarea type="text" name="" id="reply-comment-content" readonly="readonly" parent-comment-id="{{$item->id}}" sub-comment-id="{{$item1->id}}">{{$item1->content}}</textarea>
 					                	<div class="action">
 						                    <span>At {{$item1->updated_at}}</span>
-						                    <span class="text-info reply-sub-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Reply</span>
-						                    @if(Auth::user()->id == $item1->commentor)
-						                    <span class="text-warning edit-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Edit</span>
-						                    @endif
-						                    @if(Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->id == $item1->commentor)
-						                    <span class="text-danger delete-comment px-1" comment-id="{{$item->id}}" sub-comment-id="{{$item1->id}}">Delete</span>
-						                    @endif
+											@if ($class->status == 1)
+												<span class="text-info reply-sub-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Reply</span>
+												@if(Auth::user()->id == $item1->commentor)
+												<span class="text-warning edit-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Edit</span>
+												@endif
+												@if(Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->id == $item1->commentor)
+												<span class="text-danger delete-comment px-1" comment-id="{{$item->id}}" sub-comment-id="{{$item1->id}}">Delete</span>
+												@endif
+											@endif
 						                </div>
 						            </div>
 					            </div>
@@ -172,6 +186,7 @@
 				        </div>
 			        @endforeach
 			        @endif
+					@if ($class->status == 1)
 			        <hr id="hr">
 			        <div class="comment-form row">
 			            <div class="col-lg-2 avatar-comment">
@@ -189,6 +204,7 @@
 			                <textarea type="text" name="" id="comment-content" placeholder="input your comment..."></textarea>
 			            </div>
 			        </div>
+					@endif
 			        {{-- <div class="comment-form row reply-comment-form">
 			            <div class="col-lg-2 avatar-comment">
 			                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">

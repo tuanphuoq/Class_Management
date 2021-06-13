@@ -71,16 +71,26 @@
 	      {{-- test new ui --}}
 	      <div class="wrap">
 	      	@if (isset($classrooms) && count($classrooms) > 0)
-		           @foreach ($classrooms as $class)
+		    @foreach ($classrooms as $class)
 	      	<div class="col-lg-2 col-md-4 class-item">
 	      		<div class="body-class-img" style="background-image: url('{{ asset(\Storage::url($class->class_image)) }}');"></div>
 	      		<div class="header-class">
 	      			<h6>Class Name : {{$class->class_name}}</h6>
 	      			<h6>Code : {{$class->class_code}}</h6>
 	      			<h6>Room : {{$class->room}}</h6>
+					  <?php $class_status = [
+						0 => 'Deleted',
+						1 => 'Is Active',
+						2 => 'Finished',
+					]; ?>
+					<h6>Status :
+						<span class="{{$class->status == 1 ? 'text-success' : 'text-danger'}}">
+							<i class="fa fa-circle" aria-hidden="true"></i> {{$class_status[$class->status]}}
+						</span>
+					</h6>
 	      		</div>
 	      		<h6 class="body-subject">Subject : {{$class->subject}}</h6>
-	      		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+	      		{{-- @if(Auth::user()->role == 1 || Auth::user()->role == 2) --}}
 	      		<div class="class-action">
 	      			{{-- <a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
 	            		class-id="{{$class->id}}" class-name="{{$class->class_name}}" subject="{{$class->subject}}" room="{{$class->room}}">Edit</a>
@@ -98,7 +108,7 @@
 	             		<i class="fa fa-trash-o" aria-hidden="true"></i>
 	             	</button> --}}
 	      		</div>
-	      		@endif
+	      		{{-- @endif --}}
 	      		{{-- <div class="view-class">
 	      			<a href="{{asset('')}}my-class/{{$class->id}}" class="btn btn-info">View <i class="fa fa-eye" aria-hidden="true"></i></a>
 	      		</div> --}}

@@ -24,13 +24,13 @@
 		      		<input type="text" name="searchData" class="form-control" placeholder="enter the value to find class">
 		      	</div>
 		      	<div class="col-lg-2 col-md-12">
-		      		<input type="submit" class="btn btn-info" value="Search">
+		      		<input type="submit" class="btn btn-info" value="Search" style="margin-top : 0.5rem;">
 		      	</div>
 		      </div>
 	      </form>
 	      <div class="box-body">
 	      	{{-- nút tạo mới lớp học chỉ được hiển thị khi người dùng là admin hoặc teacher --}}
-	       	@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+	       	@if(Auth::user()->role == 1)
 	       		<a data-toggle="modal" href='#class-modal' class="btn btn-sm btn-success" id="btn-add-class">{{__('dict.class.add_class')}}</a>
 	       	@endif
 	       {{-- <div class="table-responsive">
@@ -82,9 +82,19 @@
 	      			<h6>Class Name : {{$class->class_name}}</h6>
 	      			<h6>Code : {{$class->class_code}}</h6>
 	      			<h6>Room : {{$class->room}}</h6>
+					<?php $class_status = [
+						0 => 'Deleted',
+						1 => 'Is Active',
+						2 => 'Finished',
+					]; ?>
+					<h6>Status :
+						<span class="{{$class->status == 1 ? 'text-success' : 'text-danger'}}">
+							<i class="fa fa-circle" aria-hidden="true"></i> {{$class_status[$class->status]}}
+						</span>
+					</h6>
 	      		</div>
 	      		<h6 class="body-subject">Subject : {{$class->subject}}</h6>
-	      		@if(Auth::user()->role == 1 || Auth::user()->role == 2)
+	      		@if(Auth::user()->role == 1)
 	      		<div class="class-action">
 	      			{{-- <a data-toggle="modal" href='#class-modal' class="btn btn-warning btn-edit-class"
 	            		class-id="{{$class->id}}" class-name="{{$class->class_name}}" subject="{{$class->subject}}" room="{{$class->room}}">Edit</a>

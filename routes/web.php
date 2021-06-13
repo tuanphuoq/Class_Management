@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/info', function () {
+    echo "Admin account username - password : admin@gmail.com - password </br>
+	Teacher account username - password : tuan.tt@gmail.com	- password </br>
+	Student account username - password : ma@gmail.com	- password";
+});
 
 Auth::routes();
 
@@ -27,6 +32,8 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::prefix('user')->group(function(){
 		Route::get('/', 'UserController@list')->name('user');
 		Route::post('role', 'UserController@role');
+		Route::get('/change-password', 'UserController@changePassword')->name('changepassword');
+		Route::post('/save-password', 'UserController@savePassword')->name('savepassword');
 	});
 	Route::prefix('class')->group(function(){
 		Route::get('/', 'ClassController@list')->name('class.list');
