@@ -54,7 +54,9 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::get('/{id}/delete-document', 'ClassController@deleteDocument');
 		Route::get('/{id}/student-list', 'ClassController@getStudentList');
 		Route::get('/{id}/accept-request', 'ClassController@acceptRequest');
+		Route::get('/{id}/cancel-request', 'ClassController@cancelRequest');
 		Route::post('/accept-invite', 'ClassController@acceptInvite');
+		Route::post('/cancel-invite', 'ClassController@cancelInvite');
 		Route::post('/{id}/delete-student', 'ClassController@outClass');
 		Route::post('/{id}/add-student', 'ClassController@inviteClass');
 		Route::post('request', 'ClassController@requestJoin')->name('class.request');

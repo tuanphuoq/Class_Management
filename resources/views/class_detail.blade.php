@@ -54,25 +54,6 @@
 	      		<div><span class="text-danger">(*)</span> Any questions about the topic can leave comments in the comments</div>
 	      	</div>
 	      	<hr>
-	      	<div class="document-title">Assignments <i class="fa fa-briefcase" aria-hidden="true"></i></div>
-	      	<div class="document-list">
-	      		<div class="assignment-row">
-	      		@if(isset($assignments) && count($assignments) > 0)
-	      		@foreach($assignments as $item)
-	      			<a class="assignment-item my-1" href="{{asset('')}}assignment/{{$item->id}}">
-	      				<i class="fa fa-folder-open-o" aria-hidden="true"></i> {{$item->title}}
-	      			</a>
-	      		@endforeach
-	      		@endif
-	      		</div>
-	      		@if((Auth::user()->role == 1 || Auth::user()->role == 2) && $class->status == 1)
-	      		<div class="document-item">
-	      			<a data-toggle="modal" href='#upload-assignment-modal' class="btn btn-success" id="add-assignment"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Assignment</a>
-	      		</div>
-	      		@endif
-	      	</div>
-	      	
-	      	<hr>
 	      	<div class="document-title">Documents <i class="fa fa-file-text" aria-hidden="true"></i></div>
 	      	<div class="document-list">
 	      		@if(isset($documents) && count($documents) > 0)
@@ -99,6 +80,24 @@
 	      			<a data-toggle="modal" href='#upload-document-modal' class="btn btn-success" id="add-document"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Document</a>
 	      		</div>
 	      		@endif
+	      		<hr>
+				<div class="document-title">Assignments <i class="fa fa-briefcase" aria-hidden="true"></i></div>
+				<div class="document-list">
+					<div class="assignment-row">
+					@if(isset($assignments) && count($assignments) > 0)
+					@foreach($assignments as $item)
+						<a class="assignment-item my-1" style="margin-right: 1rem;" href="{{asset('')}}assignment/{{$item->id}}">
+							<i class="fa fa-folder-open-o" aria-hidden="true"></i> {{$item->title}}
+						</a>
+					@endforeach
+					@endif
+					</div>
+					@if((Auth::user()->role == 1 || Auth::user()->role == 2) && $class->status == 1)
+					<div class="document-item">
+						<a data-toggle="modal" href='#upload-assignment-modal' class="btn btn-success" id="add-assignment"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Assignment</a>
+					</div>
+					@endif
+				</div>
 	      	</div>
 	      	<hr>
 	      	<div class="comment-section">
@@ -306,7 +305,10 @@
 		          		<tr>
 		          			<td>{{$value->student_id}}</td>
 		          			<td>{{$value->name}}</td>
-		          			<td><button request-id="{{$value->id}}" class="btn btn-success accept-request">Accept</button></td>
+		          			<td>
+								<button request-id="{{$value->id}}" class="btn btn-success accept-request">Accept</button>
+								<button request-id="{{$value->id}}" class="btn btn-danger cancel-request">Cancel</button>
+							</td>
 		          		</tr>
 		          		@endforeach
 		          	@endif

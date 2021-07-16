@@ -186,6 +186,10 @@
 		          					class-id="{{$value->class_id}}" teacher-id="{{$value->teacher_id}}">
 		          					Accept
 		          				</button>
+		          				<button invite-id="{{$value->id}}" class="btn btn-danger cancel-invite" 
+		          					class-id="{{$value->class_id}}" teacher-id="{{$value->teacher_id}}">
+		          					Cancel
+		          				</button>
 		          			</td>
 		          		</tr>
 		          		<?php $index++ ?>

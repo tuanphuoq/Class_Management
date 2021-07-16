@@ -394,6 +394,18 @@ class ClassController extends Controller
 			'message' => __('dict.class.accept_success')
 		]);
 	}
+	// giáo viên từ chối yêu cầu tham gia lớp học
+	public function cancelRequest($classID, Request $req)
+	{
+		// lấy đối tượng đang chờ từ bảng request_joins
+		$request = RequestJoin::find($req->requestID);
+		$request->state = $this::NO;
+		$request->save();
+		return response()->json([
+			'status' => true,
+			'message' => __('dict.class.cancel_success')
+		]);
+	}
 
 	// học viên xác nhận tham gia lớp học từ lời mời của giáo viên
 	public function acceptInvite(Request $req)
@@ -409,6 +421,18 @@ class ClassController extends Controller
 		return response()->json([
 			'status' => true,
 			'message' => __('dict.class.accept_invite_success')
+		]);
+	}
+	// học viên từ chối tham gia lớp học từ lời mời của giáo viên
+	public function cancelInvite(Request $req)
+	{
+		$invite = InviteJoin::find($req->inviteID);
+
+		$invite->state = $this::NO;
+		$invite->save();
+		return response()->json([
+			'status' => true,
+			'message' => __('dict.class.cancel_invite_success')
 		]);
 	}
 

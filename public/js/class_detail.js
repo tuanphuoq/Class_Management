@@ -6,6 +6,7 @@ $('.datepicker').datepicker({
 });
 
 $(document).on('click', '#btn-student-list', function() {
+	$('#student-list-body').empty()
 	url = document.URL + '/student-list';
 	role = $(this).attr('role')
 	// dùng ajax để xóa lấy danh sách học viên
@@ -18,6 +19,7 @@ $(document).on('click', '#btn-student-list', function() {
 		// },
 	})
 	.done(function(response) {
+		console.log(response);
 		let i = 1;
 		// đổ dữ liệu ra bảng trong model danh sách học viên
 		$(response).each(function() {
@@ -104,6 +106,37 @@ $('.accept-request').on('click', function() {
 	var obj = $(this);
 	var requestID = $(this).attr('request-id')
 	url = document.URL + '/accept-request';
+	$.ajax({
+		url: url,
+		type: 'GET',
+		data: {
+			requestID: requestID
+		},
+	})
+	.done(function(response) {
+		// gửi thành công lên server
+		if(response.status) { //nếu server mời học viênthành công
+			// xóa request cua học viên trên giao diện modal
+			let deleteObj = $(obj).parent().parent();
+			deleteObj.remove();
+			//thông báo thành công
+			toastr.success(response.message);
+		} else { //nếu server trả về kết quả thất bại
+			//thông báo thất bại
+			toastr.error(response.message);
+		}
+	})
+	.fail(function() {
+		//thông báo thất bại
+		toastr.error(response.message);
+	})
+})
+
+// sự kiện từ chối cho học viên join vào lớp
+$('.cancel-request').on('click', function() {
+	var obj = $(this);
+	var requestID = $(this).attr('request-id')
+	url = document.URL + '/cancel-request';
 	$.ajax({
 		url: url,
 		type: 'GET',
@@ -512,3 +545,5 @@ $(document).on('click', '.edit-comment', function() {
 // $('#upload-document-modal').on('hidden.bs.modal', function (e) {
 //   	window.location.replace(route);
 // })
+
+// formdata : https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects

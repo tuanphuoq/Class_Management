@@ -29,7 +29,7 @@ hr{
 .assignment-row{
 	display : flex;
 	flex-wrap : wrap;
-	justify-content:space-between;
+	/* justify-content:space-between; */
 }
 .assignment-item{
 	display: flex;

@@ -160,3 +160,39 @@ $('.accept-invite').on('click', function() {
 		toastr.error(response.message);
 	})
 })
+
+$('.cancel-invite').on('click', function() {
+	// đồng ý join vào lớp
+	var obj = $(this);
+	var inviteID = $(this).attr('invite-id')
+	var classID = $(this).attr('class-id')
+	var teacherID = $(this).attr('teacher-id')
+	// url = document.URL + '/accept-invite';
+	url = 'my-class/cancel-invite';
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: {
+			inviteID: inviteID,
+			classID: classID,
+			teacherID: teacherID
+		},
+	})
+	.done(function(response) {
+		// gửi thành công lên server
+		if(response.status) { //nếu server mời học viênthành công
+			// xóa request cua học viên trên giao diện modal
+			let deleteObj = $(obj).parent().parent();
+			deleteObj.remove();
+			//thông báo thành công
+			toastr.success(response.message);
+		} else { //nếu server trả về kết quả thất bại
+			//thông báo thất bại
+			toastr.error(response.message);
+		}
+	})
+	.fail(function() {
+		//thông báo thất bại
+		toastr.error(response.message);
+	})
+})

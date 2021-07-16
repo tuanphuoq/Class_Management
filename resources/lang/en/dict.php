@@ -36,7 +36,9 @@ return [
         'invite_success' => 'Successful invite, please wait for confirmation',
         'invite_fail' => 'Failed to join, please try again',
         'accept_success' => 'The student has joined the class',
+        'cancel_success' => 'The request has cancel',
         'accept_invite_success' => 'Joined the class',
+        'cancel_invite_success' => 'Declined the invitation to join the class',
         'change_success' => 'Change status of the classroom successfully',
         'change_fail' => "Change status of classroom fail, Check again" ,
         'change_status_class' => 'Change status of the classroom'
