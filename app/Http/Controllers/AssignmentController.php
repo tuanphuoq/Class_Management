@@ -12,6 +12,7 @@ use App\User;
 use App\Classroom;
 use App\Assignment;
 use App\AssignmentSubmit;
+use App\AssignmentDocument;
 
 class AssignmentController extends Controller
 {
@@ -20,6 +21,7 @@ class AssignmentController extends Controller
 		$classID = Assignment::find($assignmentID)->value('class_id');
 		$class = Classroom::find($classID);
 		$assignment = Assignment::find($assignmentID);
+		$assDocument = AssignmentDocument::where('assignment_id', $assignmentID)->orderBy('created_at', 'DESC')->get();
 		$assignmentList = AssignmentSubmit::select(
 			'users.id as user_id',
 			'users.name',
@@ -46,7 +48,8 @@ class AssignmentController extends Controller
 			'class' => $class,
 			'assignment' => $assignment,
 			'submit' => $submit,
-			'assignmentList' => $assignmentList
+			'assignmentList' => $assignmentList,
+			'assDocument' => $assDocument,
 		]);
 	}
 
@@ -106,6 +109,24 @@ class AssignmentController extends Controller
 			//create record
 			AssignmentSubmit::create($record);
 		}
+		// callback giao diện assignment
+		return redirect()->route('assignment', $assignmentID);
+    }
+
+	// update document for assignment
+    public function uploadDocument($assignmentID, Request $req)
+    {
+
+		//create
+		$record['assignment_id'] = $assignmentID;
+		$record['title'] = $req->title;
+		$file = $req->file('documentFile');
+		//upload file lên server
+		$fileName = strtotime(Carbon::now()->toDateTimeString())."-assignment-".$file->getClientOriginalName();
+		$record['url'] = $this->storeDocument($file, $fileName);
+		//create record
+		AssignmentDocument::create($record);
+
 		// callback giao diện assignment
 		return redirect()->route('assignment', $assignmentID);
     }

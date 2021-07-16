@@ -75,6 +75,7 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::prefix('assignment')->group(function(){
 		Route::get('/{id}', 'AssignmentController@get')->name('assignment');
 		Route::post('/{id}/upload', 'AssignmentController@upload');
+		Route::post('/{id}/upload-document', 'AssignmentController@uploadDocument');
 		Route::get('/{id}/delete-assignment-submit', 'AssignmentController@deleteSubmit');
 	});
 });

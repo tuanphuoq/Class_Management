@@ -25,6 +25,7 @@
 	      		<a data-toggle="modal" href='#add-student-modal' class="btn btn-box-header btn-success">
 	      			Add Student  &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
 	      		</a> --}}
+	      		<a data-toggle="modal" href='#upload-assignment-document' class="btn btn-box-header btn-success" id="add-assignment-document"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add new document</a>
 	      		<a data-toggle="modal" href='#upload-assignment-modal' class="btn btn-box-header btn-success" id="edit-assignment"><i class="fa fa-plus-circle" aria-hidden="true"></i> Edit Assignment</a>
 	      		@endif
 	      		{{-- <a data-toggle="modal" href='#class-modal' class="btn btn-box-header btn-success" id="btn-student-list" role="{{Auth::user()->role}}">
@@ -36,6 +37,14 @@
 	      	<div class="teacher-name">Assignment : <span class="name">{{$assignment->title}}</span></div>
 	      	<div class="teacher-name des"><i class="fa fa-calendar-times-o" aria-hidden="true"></i> Expired Date : <span class="name text-danger">{{$assignment->expired_date}}</span></div>
 	      	<div class="des">Description : {{$assignment->description}}</div>
+			<div style="margin : 3rem 0rem;">
+				@foreach ($assDocument as $item)
+					<div>
+						<h5>description : {{$item->title}}</h5>
+	      				<i class="fa fa-book" aria-hidden="true"></i><a href="{{asset('')}}download/{{$item->url}}" > {{$item->url}}</a>
+					</div>
+				@endforeach
+			</div>
 	      	<hr>
 	      	<div>
 	      		<div>
@@ -81,6 +90,11 @@
 	      			    {{-- end --}}
 	      			</ul>
 	      		</div>
+				<div style="margin : 3rem 0rem; text-align : right;">
+					<a class="btn btn-primary" style="padding : 0.5rem 3rem;" href="{{route('myclass', $class->id)}}">
+						<i class="fa fa-chevron-left" aria-hidden="true"></i> Back
+					</a>
+				</div>
 	      	</div>
 	      </div>
 	    </div>
@@ -119,7 +133,7 @@
 	  </div>
 	</div> --}}
 
-	{{-- modal upload tài liệu --}}
+	{{-- modal upload bài tập --}}
 	<div class="modal fade" id="upload-document-modal">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
@@ -146,7 +160,31 @@
 	  </div>
 	</div>
 
-	{{-- modal upload bài tập --}}
+	{{-- modal upload tài liệu bài tập --}}
+	<div class="modal fade" id="upload-assignment-document">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Add Assignment Document</h4>
+	      </div>
+	      <form method="POST" action="{{asset('')}}assignment/{{$assignment->id}}/upload-document" enctype="multipart/form-data">
+	      <div class="modal-body">
+	        @csrf
+	        	<label>Title</label>
+	        	<input type="text" class="form-control" id="" name="title">
+	        	<label>Document File</label>
+	        	<input type="file" class="form-control-file" id="" name="documentFile" required>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-primary btn-save" id="">{{__('dict.action.save')}}</button>
+	      </div>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+
+	{{-- modal edit mục bài tập --}}
 	<div class="modal fade" id="upload-assignment-modal">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
