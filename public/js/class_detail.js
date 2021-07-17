@@ -315,13 +315,23 @@ $(document).on('keypress', '.comment-form #comment-content', function (e) {
 		let commentor = $('.comment-form .commentor').attr('commentor')
 		let username = $('.comment-form .commentor').html()
 		let url = document.URL + '/add-comment';
+		formData = new FormData();
+		formData.append('commentor', commentor);
+		formData.append('content', content);
+		if ($('.comment-form #attachment-comment').val()) {
+			formData.append('attachment', $('.comment-form #attachment-comment')[0].files[0]);
+		}
+		// console.log(formData.getAll('attachment'));
         $.ajax({
 			url: url,
 			type: 'POST',
-			data: {
-				commentor: commentor,
-				content : content
-			},
+			data: formData,
+			// data: {
+			// 	commentor: commentor,
+			// 	content : content
+			// },
+			processData: false,
+			contentType: false
 		})
 		.done(function(response) {
 			// gửi thành công lên server
@@ -335,6 +345,7 @@ $(document).on('keypress', '.comment-form #comment-content', function (e) {
 			            	'</div></div>' +
 			            '<div class="col-lg-10 col-xs-8 content-comment">' +
 			                '<textarea type="text" name="" id="" >' + content + '</textarea>'+
+							'<div><i class="fa fa-book" aria-hidden="true"></i><a href="http://'+ window.location.hostname +':8000/download/'+response.attachment+'">' + response.attachment + '</a></div>' +
 			                '<div class="action"><span>now </span>'+
 			                    '<span class="text-warning edit-comment px-1" comment-id="'+ response.id +'">Edit</span>'+
 			                    '<span class="text-danger delete-comment px-1" comment-id="'+ response.id +'">Delete</span>'+
@@ -357,14 +368,24 @@ $(document).on('keypress', '#reply-comment-content', function (e) {
 		let subComment = $(this).attr('sub-comment-id')
 		if (subComment == null) {
 			//add sub comment
+			formData = new FormData();
+			formData.append('parent_id', parentCommentID);
+			formData.append('content', content);
+			if ($(this).next().find('#attachment-comment').val()) {
+				formData.append('attachment', $(this).next().find('#attachment-comment')[0].files[0]);
+			}
+			//url
 			let url = document.URL + '/add-sub-comment';
 			$.ajax({
 				url: url,
 				type: 'POST',
-				data: {
-					parent_id : parentCommentID,
-					content : content
-				},
+				// data: {
+				// 	parent_id : parentCommentID,
+				// 	content : content
+				// },
+				data: formData,
+				processData: false,
+				contentType: false
 			})
 			.done(function(response) {
 				// gửi thành công lên server
@@ -373,11 +394,13 @@ $(document).on('keypress', '#reply-comment-content', function (e) {
 					$(obj).val(content)
 					$(obj).prop("readonly" , "true")
 					$(obj).attr("sub-comment-id" , response.id)
-					let html = '<div class="action"><span>now </span>'+
+					let html = 	'<div><i class="fa fa-book" aria-hidden="true"></i><a href="http://'+ window.location.hostname +':8000/download/'+response.attachment+'">' + response.attachment + '</a></div>' +
+								'<div class="action"><span>now </span>'+
 				                '<span class="text-warning edit-comment px-1" comment-id="'+ parentCommentID +'" sub-comment-id="'+ response.id +'">Edit</span>'+
 				                '<span class="text-danger delete-comment px-1" comment-id="'+ parentCommentID +'" sub-comment-id="'+ response.id +'">Delete</span>'+
 				                '</div></div></div>'
 				    $(obj).after(html)
+					// todo : chưa xóa attachment khi reply success
 					//thông báo thành công
 					console.log(response.message);
 				} else {
@@ -514,7 +537,9 @@ $(document).on('click', '.reply-comment', function() {
                 '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">'+
                 '<div class="commentor font-weight-bold" commentor="'+ commentorID +'">'+
                 	'<span class="name">'+ name +'</span></div></div><div class="col-lg-10 content-comment">'+
-                '<textarea type="text" name="" id="reply-comment-content" placeholder="input your comment..." parent-comment-id="'+commentID+'"></textarea>'+'</div></div>'
+                '<textarea type="text" name="" id="reply-comment-content" placeholder="input your comment..." parent-comment-id="'+commentID+'"></textarea>'+
+				'<div class="attachment"><span>Add new attachment</span><input type="file" name="attachment" id="attachment-comment"></div>'+
+				'</div></div>'
     $(position).append(html)
 })
 
@@ -529,7 +554,9 @@ $(document).on('click', '.reply-sub-comment', function() {
                 '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/512px-User_font_awesome.svg.png" alt="">'+
                 '<div class="commentor font-weight-bold" commentor="'+ commentorID +'">'+
                 	'<span class="name">'+ name +'</span></div></div><div class="col-lg-10 content-comment">'+
-                '<textarea type="text" name="" id="reply-comment-content" placeholder="input your comment..." parent-comment-id="'+commentID+'"></textarea>'+'</div></div>'
+                '<textarea type="text" name="" id="reply-comment-content" placeholder="input your comment..." parent-comment-id="'+commentID+'"></textarea>'+
+				'<div class="attachment"><span>Add new attachment</span><input type="file" name="attachment" id="attachment-comment"></div>'+
+				'</div></div>'
     $(position).append(html)
 })
 

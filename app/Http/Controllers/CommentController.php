@@ -9,19 +9,35 @@ use Auth;
 use Storage;
 use App\Comment;
 use App\SubComment;
+use Carbon\Carbon;
 
 class CommentController extends Controller
 {
+	// hàm lưu trữ file upload
+    public function storeDocument($file, $fileName)
+    {
+		$disk = 'public';
+		$path=$file->storeAs('documents', $fileName, $disk);
+		return $path;
+	}
+
     public function addSubComment(Request $req)
     {
     	$subComment['parent_comment_id'] = $req->parent_id;
     	$subComment['content'] = $req->content;
     	$subComment['commentor'] = Auth::user()->id;
+		if (!is_null($req->file('attachment'))) {
+			$file = $req->file('attachment');
+			//upload file lên server
+			$fileName = strtotime(Carbon::now()->toDateTimeString())."-".$file->getClientOriginalName();
+			$subComment['attachment'] = $this->storeDocument($file, $fileName);
+		}
     	if ($result = SubComment::create($subComment)) {
     		return response()->json([
 				'status' => true,
 				'message' => "success",
-				'id' => $result->id
+				'id' => $result->id,
+				'attachment' => $subComment['attachment']
 			]);
     	} else {
     		return response()->json([

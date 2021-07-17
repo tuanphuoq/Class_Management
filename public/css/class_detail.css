@@ -95,7 +95,7 @@ hr{
     height: 5rem;
 }
 .comment-item{
-    margin-top: 5px;
+    margin-top: 2rem;
     margin-bottom: 10px;
 }
 .content-comment textarea{
@@ -150,6 +150,7 @@ hr{
 }
 .reply-comment-form{
 	margin-left : 16%;
+	margin-top: 1rem;
 }
 .content-comment textarea.edit-commented{
 	outline: none;

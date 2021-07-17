@@ -134,6 +134,11 @@
 				            </div>
 				            <div class="col-lg-10 col-md-10 col-xs-8 content-comment">
 				                <textarea type="text" name="" class="edit-commented" readonly="readonly" comment-id="{{$item->id}}">{{$item->content}}</textarea>
+								@if (!is_null($item->attachment))
+								<div>
+									<i class="fa fa-book" aria-hidden="true"></i><a href="{{asset('')}}download/{{$item->attachment}}" > {{$item->attachment}}</a>
+								</div>
+								@endif
 				                <div class="action">
 				                    <span>At {{$item->updated_at}}</span>
 									@if ($class->status == 1)
@@ -166,7 +171,12 @@
 					            	</div>
 						            <div class="col-lg-10 content-comment">
 						                <textarea type="text" name="" id="reply-comment-content" readonly="readonly" parent-comment-id="{{$item->id}}" sub-comment-id="{{$item1->id}}">{{$item1->content}}</textarea>
-					                	<div class="action">
+					                	@if (!is_null($item1->attachment))
+										<div>
+											<i class="fa fa-book" aria-hidden="true"></i><a href="{{asset('')}}download/{{$item1->attachment}}" > {{$item1->attachment}}</a>
+										</div>
+										@endif
+										<div class="action">
 						                    <span>At {{$item1->updated_at}}</span>
 											@if ($class->status == 1)
 												<span class="text-info reply-sub-comment px-1" sub-comment-id="{{$item1->id}}" comment-id={{$item->id}}>Reply</span>
@@ -201,6 +211,10 @@
 			            </div>
 			            <div class="col-lg-10 content-comment">
 			                <textarea type="text" name="" id="comment-content" placeholder="input your comment..."></textarea>
+							<div class="attachment">
+								<span>Add new attachment</span>
+								<input type="file" name="attachment" id="attachment-comment">
+							</div>
 			            </div>
 			        </div>
 					@endif

@@ -12,7 +12,7 @@
 	      <div class="box-body">
 	       {{-- <a href="{{asset('')}}user/create" class="btn btn-sm btn-success">Add</a> --}}
 	       <div class="table-responsive">
-	        <table class="table table-hover table-responsive">
+	        <table class="table table-hover table-responsive" id="datatable">
 	          <thead>
 	            <tr>
 	              <th>#</th>
@@ -84,4 +84,9 @@
 
 @section('foot')
 	<script src="{{asset('')}}js/user.js"></script>
+	<script>
+		$(document).ready( function () {
+			$('#datatable').DataTable();
+		});
+	</script>
 @endsection

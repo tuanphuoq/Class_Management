@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="{{asset('../css/toastr.min.css')}}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
   @yield('css')
   <link rel="stylesheet"
   href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -150,7 +151,7 @@
     <footer class="main-footer">
       <div class="pull-right hidden-xs">
       </div>
-      <strong>Copyright &copy; 2020<a> {{ __('dict.app_name') }}</a>.</strong> Reserved
+      <strong>Copyright &copy; 2021<a> {{ __('dict.app_name') }}</a>.</strong> Reserved
     </footer>
     <div class="control-sidebar-bg"></div>
   </div>
@@ -164,6 +165,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/js/fileinput.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.4.7/themes/fa/theme.js" type="text/javascript"></script>
   <script src="https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
   @yield('foot')
 </body>
 </html>

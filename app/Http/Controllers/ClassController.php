@@ -235,6 +235,7 @@ class ClassController extends Controller
 						'comments.id',
 						'comments.commentor',
 						'comments.content',
+						'comments.attachment',
 						'comments.created_at',
 						'comments.updated_at',
 					)
@@ -252,6 +253,7 @@ class ClassController extends Controller
 						'sub_comments.parent_comment_id',
 						'sub_comments.commentor',
 						'sub_comments.content',
+						'sub_comments.attachment',
 						'sub_comments.created_at',
 						'sub_comments.updated_at',
 					)
@@ -506,11 +508,18 @@ class ClassController extends Controller
 		$record['commentor'] = $req->commentor;
 		$record['content'] = $req->content;
 		$record['created_at'] = Carbon::now();
+		if (!is_null($req->file('attachment'))) {
+			$file = $req->file('attachment');
+			//upload file lên server
+			$fileName = strtotime(Carbon::now()->toDateTimeString())."-".$file->getClientOriginalName();
+			$record['attachment'] = $this->storeDocument($file, $fileName);
+		}
 		$comment = Comment::create($record);
 		return response()->json([
 			'status' => true,
 			'message' => 'Add comment successfully',
-			'id' => $comment->id
+			'id' => $comment->id,
+			'attachment' => $record['attachment']
 		]);
 	}
 
